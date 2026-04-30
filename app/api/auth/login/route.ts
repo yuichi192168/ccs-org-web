@@ -1,9 +1,9 @@
 import { NextRequest } from 'next/server'
-import { createServiceClient } from '@/lib/supabaseClient'
+import { createServerClient } from '@/lib/supabaseServer'
 
 export const runtime = 'nodejs'
 
-const supabase = createServiceClient()
+const supabase = createServerClient()
 
 function apiError(message: string, status: number, details?: Record<string, unknown>) {
   return Response.json(
