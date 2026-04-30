@@ -81,10 +81,10 @@ export function StudentProfileManagement() {
           throw new Error(payload.message || 'Failed to load student profiles.')
         }
 
-        const pageProfiles = Array.isArray(payload.data) ? (payload.data as StudentProfileRecord[]) : []
+        const pageProfiles = Array.isArray(payload.data?.profiles) ? (payload.data.profiles as StudentProfileRecord[]) : []
         allProfiles.push(...pageProfiles)
 
-        const pagesFromMeta = Number(payload?.meta?.pagination?.pages)
+        const pagesFromMeta = Number(payload.data?.pagination?.totalPages)
         totalPages = Number.isFinite(pagesFromMeta) && pagesFromMeta > 0 ? pagesFromMeta : 1
         page += 1
       }
@@ -142,10 +142,10 @@ export function StudentProfileManagement() {
       const apiData = {
         userId: createForm.userId,
         studentNumber: createForm.studentNumber,
-        program: createForm.program,
         yearLevel: createForm.yearLevel,
+        program: createForm.program,
         gpa: createForm.gpa,
-        enrollmentStatus: createForm.enrollmentStatus
+        enrollmentStatus: createForm.enrollmentStatus,
       }
       
       const response = await fetch('/api/student-profiles', {
@@ -192,16 +192,17 @@ export function StudentProfileManagement() {
     try {
       // Transform form data to match API expectations for updates
       const updateData = {
-        user_id: editForm.userId,
-        student_number: editForm.studentNumber,
+        id: editingId,
+        yearLevel: editForm.yearLevel,
         program: editForm.program,
-        year_level: editForm.yearLevel,
+        gpa: editForm.gpa,
+        enrollmentStatus: editForm.enrollmentStatus,
       }
       
-      const response = await fetch(`/api/student-profiles`, {
+      const response = await fetch('/api/student-profiles', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: editingId, ...updateData }),
+        body: JSON.stringify(updateData),
       })
 
       const payload = await response.json()
@@ -223,7 +224,7 @@ export function StudentProfileManagement() {
     if (!isConfirmed) return
 
     try {
-      const response = await fetch(`/api/student-profiles/${id}`, { method: 'DELETE' })
+      const response = await fetch(`/api/student-profiles?id=${id}`, { method: 'DELETE' })
       const payload = await response.json()
 
       if (!response.ok || !payload.success) {

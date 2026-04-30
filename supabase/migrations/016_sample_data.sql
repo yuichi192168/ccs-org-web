@@ -91,7 +91,11 @@ INSERT INTO public.academic_history (id, student_id, course_id, semester, academ
 (uuid_generate_v4(), (SELECT id FROM public.student_profiles WHERE student_number = '2021001'), (SELECT id FROM public.courses WHERE course_code = 'CS101'), 'First', '2022-2023', 92.5, 'A', 3, 4.0),
 (uuid_generate_v4(), (SELECT id FROM public.student_profiles WHERE student_number = '2021002'), (SELECT id FROM public.courses WHERE course_code = 'CS101'), 'First', '2022-2023', 88.0, 'B+', 3, 3.5),
 (uuid_generate_v4(), (SELECT id FROM public.student_profiles WHERE student_number = '2021003'), (SELECT id FROM public.courses WHERE course_code = 'IT101'), 'First', '2022-2023', 91.0, 'A', 3, 4.0),
-(uuid_generate_v4(), (SELECT id FROM public.student_profiles WHERE student_number = '2021004'), (SELECT id FROM public.courses WHERE course_code = 'IT101'), 'First', '2022-2023', 85.0, 'B', 3, 3.0);
+(uuid_generate_v4(), (SELECT id FROM public.student_profiles WHERE student_number = '2021004'), (SELECT id FROM public.courses WHERE course_code = 'IT101'), 'First', '2022-2023', 85.0, 'B', 3, 3.0),
+(uuid_generate_v4(), (SELECT id FROM public.student_profiles WHERE student_number = '2021001'), (SELECT id FROM public.courses WHERE course_code = 'CS102'), 'Second', '2022-2023', 89.5, 'B+', 4, 3.5),
+(uuid_generate_v4(), (SELECT id FROM public.student_profiles WHERE student_number = '2021002'), (SELECT id FROM public.courses WHERE course_code = 'CS201'), 'Second', '2022-2023', 78.0, 'C+', 3, 2.5),
+(uuid_generate_v4(), (SELECT id FROM public.student_profiles WHERE student_number = '2021003'), (SELECT id FROM public.courses WHERE course_code = 'IT101'), 'Second', '2022-2023', 93.0, 'A', 3, 4.0),
+(uuid_generate_v4(), (SELECT id FROM public.student_profiles WHERE student_number = '2021005'), (SELECT id FROM public.courses WHERE course_code = 'CS101'), 'First', '2022-2023', 76.5, 'C+', 3, 2.5);
 
 -- =============================================
 -- SAMPLE ATTENDANCE
@@ -133,11 +137,15 @@ INSERT INTO public.organization_memberships (id, organization_id, student_id, po
 -- SAMPLE NOTIFICATIONS
 -- =============================================
 
-INSERT INTO public.notifications (id, recipient_id, sender_id, title, message, type, priority) VALUES
-(uuid_generate_v4(), '00000000-0000-0000-0000-000000000005', '00000000-0000-0000-0000-000000000001', 'Welcome to CCS!', 'Welcome to the Computer Science Society. Your account has been successfully created.', 'info', 'normal'),
-(uuid_generate_v4(), '00000000-0000-0000-0000-000000000006', '00000000-0000-0000-0000-000000000002', 'Assignment Posted', 'A new assignment has been posted for CS101. Due date: September 15, 2023.', 'info', 'high'),
-(uuid_generate_v4(), '00000000-0000-0000-0000-000000000007', '00000000-0000-0000-0000-000000000003', 'Meeting Reminder', 'Reminder: Web Development Society meeting tomorrow at 3:00 PM.', 'info', 'normal'),
-(uuid_generate_v4(), '00000000-0000-0000-0000-000000000008', '00000000-0000-0000-0000-000000000001', 'System Maintenance', 'The system will be under maintenance this weekend from 10 PM to 2 AM.', 'warning', 'high');
+INSERT INTO public.notifications (id, recipient_id, sender_id, title, message, type, priority, is_read) VALUES
+(uuid_generate_v4(), '00000000-0000-0000-0000-000000000005', '00000000-0000-0000-0000-000000000001', 'Welcome to CCS!', 'Welcome to the Computer Science Society. Your account has been successfully created.', 'info', 'normal', true),
+(uuid_generate_v4(), '00000000-0000-0000-0000-000000000006', '00000000-0000-0000-0000-000000000002', 'Assignment Posted', 'A new assignment has been posted for CS101. Due date: September 15, 2023.', 'info', 'high', false),
+(uuid_generate_v4(), '00000000-0000-0000-0000-000000000007', '00000000-0000-0000-0000-000000000003', 'Meeting Reminder', 'Reminder: Web Development Society meeting tomorrow at 3:00 PM.', 'info', 'normal', false),
+(uuid_generate_v4(), '00000000-0000-0000-0000-000000000008', '00000000-0000-0000-0000-000000000001', 'System Maintenance', 'The system will be under maintenance this weekend from 10 PM to 2 AM.', 'warning', 'high', true),
+(uuid_generate_v4(), '00000000-0000-0000-0000-000000000009', '00000000-0000-0000-0000-000000000002', 'Grade Posted', 'Your grade for CS101 midterm exam has been posted. Check your academic history.', 'success', 'normal', false),
+(uuid_generate_v4(), '00000000-0000-0000-0000-000000000005', '00000000-0000-0000-0000-000000000003', 'Enrollment Confirmation', 'Your enrollment for Fall 2023 semester has been confirmed.', 'success', 'high', true),
+(uuid_generate_v4(), '00000000-0000-0000-0000-000000000006', '00000000-0000-0000-0000-000000000001', 'Password Reset Required', 'Please reset your password for security reasons.', 'error', 'urgent', false),
+(uuid_generate_v4(), '00000000-0000-0000-0000-000000000007', '00000000-0000-0000-0000-000000000004', 'Schedule Update', 'Class schedule for IT201 has been updated. New time: Tuesdays 2-4 PM.', 'info', 'normal', false);
 
 -- =============================================
 -- SAMPLE SYSTEM SETTINGS

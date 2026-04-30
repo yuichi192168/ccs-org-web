@@ -89,7 +89,7 @@ export interface Database {
         Row: {
           id: string
           user_id: string
-          employee_number: string
+          employee_id: string
           department: string
           position: string
           specialization: string | null
@@ -100,7 +100,7 @@ export interface Database {
         Insert: {
           id?: string
           user_id: string
-          employee_number: string
+          employee_id: string
           department: string
           position: string
           specialization?: string | null
@@ -111,7 +111,7 @@ export interface Database {
         Update: {
           id?: string
           user_id?: string
-          employee_number?: string
+          employee_id?: string
           department?: string
           position?: string
           specialization?: string | null
@@ -124,24 +124,24 @@ export interface Database {
         Row: {
           id: string
           user_id: string
-          admin_level: 'basic' | 'super' | 'system'
-          permissions: string[]
+          admin_level: 'super' | 'department' | 'system'
+          department: string | null
           created_at: string
           updated_at: string
         }
         Insert: {
           id?: string
           user_id: string
-          admin_level?: 'basic' | 'super' | 'system'
-          permissions?: string[]
+          admin_level: 'super' | 'department' | 'system'
+          department?: string | null
           created_at?: string
           updated_at?: string
         }
         Update: {
           id?: string
           user_id?: string
-          admin_level?: 'basic' | 'super' | 'system'
-          permissions?: string[]
+          admin_level?: 'super' | 'department' | 'system'
+          department?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -150,10 +150,14 @@ export interface Database {
         Row: {
           id: string
           course_code: string
-          course_name: string
+          title: string
           description: string | null
-          units: number
+          credits: number
           department: string
+          semester: string
+          academic_year: string
+          faculty_id: string | null
+          max_students: number
           is_active: boolean
           created_at: string
           updated_at: string
@@ -161,10 +165,14 @@ export interface Database {
         Insert: {
           id?: string
           course_code: string
-          course_name: string
+          title: string
           description?: string | null
-          units?: number
+          credits: number
           department: string
+          semester: string
+          academic_year: string
+          faculty_id?: string | null
+          max_students?: number
           is_active?: boolean
           created_at?: string
           updated_at?: string
@@ -172,10 +180,14 @@ export interface Database {
         Update: {
           id?: string
           course_code?: string
-          course_name?: string
+          title?: string
           description?: string | null
-          units?: number
+          credits?: number
           department?: string
+          semester?: string
+          academic_year?: string
+          faculty_id?: string | null
+          max_students?: number
           is_active?: boolean
           created_at?: string
           updated_at?: string
@@ -206,33 +218,30 @@ export interface Database {
           id: string
           student_id: string
           course_id: string
-          semester: string
-          academic_year: string
+          enrollment_date: string
           status: 'enrolled' | 'dropped' | 'completed' | 'failed'
-          grade: number | null
-          enrolled_at: string
+          final_grade: number | null
+          created_at: string
           updated_at: string
         }
         Insert: {
           id?: string
           student_id: string
           course_id: string
-          semester: string
-          academic_year: string
+          enrollment_date: string
           status?: 'enrolled' | 'dropped' | 'completed' | 'failed'
-          grade?: number | null
-          enrolled_at?: string
+          final_grade?: number | null
+          created_at?: string
           updated_at?: string
         }
         Update: {
           id?: string
           student_id?: string
           course_id?: string
-          semester?: string
-          academic_year?: string
+          enrollment_date?: string
           status?: 'enrolled' | 'dropped' | 'completed' | 'failed'
-          grade?: number | null
-          enrolled_at?: string
+          final_grade?: number | null
+          created_at?: string
           updated_at?: string
         }
       }
@@ -244,8 +253,9 @@ export interface Database {
           semester: string
           academic_year: string
           grade: number | null
+          grade_letter: 'A' | 'B+' | 'B' | 'C+' | 'C' | 'D' | 'F' | null
           credits_earned: number | null
-          gpa_impact: number | null
+          gpa_points: number | null
           created_at: string
           updated_at: string
         }
@@ -256,8 +266,9 @@ export interface Database {
           semester: string
           academic_year: string
           grade?: number | null
+          grade_letter?: 'A' | 'B+' | 'B' | 'C+' | 'C' | 'D' | 'F' | null
           credits_earned?: number | null
-          gpa_impact?: number | null
+          gpa_points?: number | null
           created_at?: string
           updated_at?: string
         }
@@ -268,8 +279,9 @@ export interface Database {
           semester?: string
           academic_year?: string
           grade?: number | null
+          grade_letter?: 'A' | 'B+' | 'B' | 'C+' | 'C' | 'D' | 'F' | null
           credits_earned?: number | null
-          gpa_impact?: number | null
+          gpa_points?: number | null
           created_at?: string
           updated_at?: string
         }
@@ -284,6 +296,7 @@ export interface Database {
           remarks: string | null
           recorded_by: string | null
           created_at: string
+          updated_at: string
         }
         Insert: {
           id?: string
@@ -294,6 +307,7 @@ export interface Database {
           remarks?: string | null
           recorded_by?: string | null
           created_at?: string
+          updated_at?: string
         }
         Update: {
           id?: string
@@ -304,42 +318,46 @@ export interface Database {
           remarks?: string | null
           recorded_by?: string | null
           created_at?: string
+          updated_at?: string
         }
       }
       medical_records: {
         Row: {
           id: string
           student_id: string
-          record_type: string
-          description: string
-          date_of_incident: string | null
+          condition: string
+          diagnosis: string | null
           treatment: string | null
-          physician_name: string | null
-          is_confidential: boolean
+          doctor_name: string | null
+          hospital: string | null
+          diagnosis_date: string | null
+          is_chronic: boolean
           created_at: string
           updated_at: string
         }
         Insert: {
           id?: string
           student_id: string
-          record_type: string
-          description: string
-          date_of_incident?: string | null
+          condition: string
+          diagnosis?: string | null
           treatment?: string | null
-          physician_name?: string | null
-          is_confidential?: boolean
+          doctor_name?: string | null
+          hospital?: string | null
+          diagnosis_date?: string | null
+          is_chronic?: boolean
           created_at?: string
           updated_at?: string
         }
         Update: {
           id?: string
           student_id?: string
-          record_type?: string
-          description?: string
-          date_of_incident?: string | null
+          condition?: string
+          diagnosis?: string | null
           treatment?: string | null
-          physician_name?: string | null
-          is_confidential?: boolean
+          doctor_name?: string | null
+          hospital?: string | null
+          diagnosis_date?: string | null
+          is_chronic?: boolean
           created_at?: string
           updated_at?: string
         }
@@ -350,10 +368,10 @@ export interface Database {
           student_id: string
           counselor_id: string | null
           session_date: string
-          session_type: string
+          session_type: 'academic' | 'personal' | 'career' | 'disciplinary'
           notes: string | null
+          recommendations: string | null
           follow_up_required: boolean
-          follow_up_date: string | null
           created_at: string
           updated_at: string
         }
@@ -362,10 +380,10 @@ export interface Database {
           student_id: string
           counselor_id?: string | null
           session_date: string
-          session_type: string
+          session_type: 'academic' | 'personal' | 'career' | 'disciplinary'
           notes?: string | null
+          recommendations?: string | null
           follow_up_required?: boolean
-          follow_up_date?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -374,10 +392,10 @@ export interface Database {
           student_id?: string
           counselor_id?: string | null
           session_date?: string
-          session_type?: string
+          session_type?: 'academic' | 'personal' | 'career' | 'disciplinary'
           notes?: string | null
+          recommendations?: string | null
           follow_up_required?: boolean
-          follow_up_date?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -387,11 +405,11 @@ export interface Database {
           id: string
           student_id: string
           incident_date: string
-          incident_type: string
-          description: string
-          action_taken: string | null
+          offense: string
           severity: 'minor' | 'major' | 'severe'
+          action_taken: string | null
           reported_by: string | null
+          status: 'open' | 'closed' | 'appealed'
           created_at: string
           updated_at: string
         }
@@ -399,11 +417,11 @@ export interface Database {
           id?: string
           student_id: string
           incident_date: string
-          incident_type: string
-          description: string
-          action_taken?: string | null
+          offense: string
           severity: 'minor' | 'major' | 'severe'
+          action_taken?: string | null
           reported_by?: string | null
+          status?: 'open' | 'closed' | 'appealed'
           created_at?: string
           updated_at?: string
         }
@@ -411,11 +429,11 @@ export interface Database {
           id?: string
           student_id?: string
           incident_date?: string
-          incident_type?: string
-          description?: string
-          action_taken?: string | null
+          offense?: string
           severity?: 'minor' | 'major' | 'severe'
+          action_taken?: string | null
           reported_by?: string | null
+          status?: 'open' | 'closed' | 'appealed'
           created_at?: string
           updated_at?: string
         }
@@ -424,40 +442,37 @@ export interface Database {
         Row: {
           id: string
           student_id: string
-          document_type: string
+          document_type: 'transcript' | 'certificate' | 'id' | 'medical' | 'other'
           document_name: string
-          file_url: string
+          file_path: string
           file_size: number | null
           mime_type: string | null
-          is_verified: boolean
-          verified_by: string | null
           uploaded_at: string
+          created_at: string
           updated_at: string
         }
         Insert: {
           id?: string
           student_id: string
-          document_type: string
+          document_type: 'transcript' | 'certificate' | 'id' | 'medical' | 'other'
           document_name: string
-          file_url: string
+          file_path: string
           file_size?: number | null
           mime_type?: string | null
-          is_verified?: boolean
-          verified_by?: string | null
           uploaded_at?: string
+          created_at?: string
           updated_at?: string
         }
         Update: {
           id?: string
           student_id?: string
-          document_type?: string
+          document_type?: 'transcript' | 'certificate' | 'id' | 'medical' | 'other'
           document_name?: string
-          file_url?: string
+          file_path?: string
           file_size?: number | null
           mime_type?: string | null
-          is_verified?: boolean
-          verified_by?: string | null
           uploaded_at?: string
+          created_at?: string
           updated_at?: string
         }
       }
@@ -467,6 +482,8 @@ export interface Database {
           name: string
           description: string | null
           advisor_id: string | null
+          category: string
+          max_members: number
           is_active: boolean
           created_at: string
           updated_at: string
@@ -476,6 +493,8 @@ export interface Database {
           name: string
           description?: string | null
           advisor_id?: string | null
+          category: string
+          max_members?: number
           is_active?: boolean
           created_at?: string
           updated_at?: string
@@ -485,6 +504,8 @@ export interface Database {
           name?: string
           description?: string | null
           advisor_id?: string | null
+          category?: string
+          max_members?: number
           is_active?: boolean
           created_at?: string
           updated_at?: string
@@ -495,28 +516,31 @@ export interface Database {
           id: string
           organization_id: string
           student_id: string
-          position: string | null
+          position: string
           joined_at: string
           left_at: string | null
           is_active: boolean
+          updated_at: string
         }
         Insert: {
           id?: string
           organization_id: string
           student_id: string
-          position?: string | null
-          joined_at?: string
+          position?: string
+          joined_at: string
           left_at?: string | null
           is_active?: boolean
+          updated_at?: string
         }
         Update: {
           id?: string
           organization_id?: string
           student_id?: string
-          position?: string | null
+          position?: string
           joined_at?: string
           left_at?: string | null
           is_active?: boolean
+          updated_at?: string
         }
       }
       notifications: {
