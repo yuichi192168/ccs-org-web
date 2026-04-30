@@ -171,7 +171,7 @@ export async function PUT(request: NextRequest) {
       return apiError('User ID is required', 400)
     }
 
-    const supabase = createAdminClient()
+    const supabase = createAdminClient() as any
 
     // Update password in auth.users if provided
     if (password && password.trim()) {
