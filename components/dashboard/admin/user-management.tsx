@@ -74,9 +74,9 @@ export function UserManagement() {
           throw new Error(payload.message || 'Failed to load users.')
         }
 
-        aggregatedUsers.push(...((Array.isArray(payload.data) ? payload.data : []) as UserRecord[]))
+        aggregatedUsers.push(...((Array.isArray(payload.data?.users) ? payload.data.users : []) as UserRecord[]))
 
-        const pagesFromMeta = Number(payload?.meta?.pagination?.pages)
+        const pagesFromMeta = Number(payload.data?.pagination?.totalPages)
         totalPages = Number.isFinite(pagesFromMeta) && pagesFromMeta > 0 ? pagesFromMeta : 1
         page += 1
       }
@@ -148,7 +148,7 @@ export function UserManagement() {
           systemId: createForm.systemId,
           name: createForm.name,
           email: createForm.email,
-          passwordHash: createForm.password,
+          password: createForm.password,
           role: createForm.role,
           status: createForm.status,
         }),
@@ -186,15 +186,16 @@ export function UserManagement() {
     setIsSaving(true)
 
     try {
-      const response = await fetch(`/api/users/${editingId}`, {
-        method: 'PATCH',
+      const response = await fetch('/api/users', {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          id: editingId,
           name: editForm.name,
           email: editForm.email,
           role: editForm.role,
           status: editForm.status,
-          ...(editForm.password.trim() ? { passwordHash: editForm.password.trim() } : {}),
+          ...(editForm.password.trim() ? { password: editForm.password.trim() } : {}),
         }),
       })
 
@@ -220,7 +221,7 @@ export function UserManagement() {
     setError('')
 
     try {
-      const response = await fetch(`/api/users/${id}`, { method: 'DELETE' })
+      const response = await fetch(`/api/users?id=${id}`, { method: 'DELETE' })
       const payload = await response.json()
 
       if (!response.ok || !payload.success) {

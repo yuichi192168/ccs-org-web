@@ -8,38 +8,44 @@ import { Edit, Plus, Save, Trash2, X } from 'lucide-react'
 
 type StudentProfileRecord = {
   id: string
-  studentNumber: string
-  course: string
-  section: string
-  yearLevel: string
-  gpa: number
-  unitsCompleted: number
-  unitsEnrolled: number
-  user?: {
-    id?: string
-    name?: string
-    systemId?: string
-    email?: string
+  user_id: string
+  student_number: string
+  year_level: number | null
+  program: string
+  gpa: number | null
+  enrollment_status: string
+  created_at: string
+  updated_at: string
+  users?: {
+    id: string
+    name: string
+    email: string
+    role: string
+    status: string
   }
 }
 
 type StudentProfileForm = {
+  userId: string
   studentNumber: string
-  course: string
-  section: string
-  yearLevel: string
+  program: string
+  yearLevel?: number
+  gpa?: number
+  enrollmentStatus?: string
   assignDefaultCourses?: boolean
 }
 
 const initialForm: StudentProfileForm = {
+  userId: '',
   studentNumber: '',
-  course: '',
-  section: '',
-  yearLevel: '1st Year',
+  program: '',
+  yearLevel: 1,
+  gpa: undefined,
+  enrollmentStatus: 'enrolled',
   assignDefaultCourses: true,
 }
 
-const yearLevels = ['1st Year', '2nd Year', '3rd Year', '4th Year', '5th Year']
+const yearLevels = [1, 2, 3, 4, 5, 6]
 const API_PAGE_LIMIT = 100
 const PAGE_SIZE_OPTIONS = [25, 50, 100]
 
@@ -100,7 +106,7 @@ export function StudentProfileManagement() {
     if (!term) return profiles
 
     return profiles.filter((profile) => {
-      return [profile.studentNumber, profile.user?.name, profile.course, profile.section, profile.yearLevel]
+      return [profile.student_number, profile.users?.name, profile.program, profile.year_level?.toString()]
         .some((value) => String(value ?? '').toLowerCase().includes(term))
     })
   }, [profiles, search])
@@ -124,18 +130,28 @@ export function StudentProfileManagement() {
     event.preventDefault()
     setError('')
 
-    if (!createForm.studentNumber || !createForm.course || !createForm.section) {
-      setError('Please complete all required fields.')
+    if (!createForm.userId || !createForm.studentNumber || !createForm.program) {
+      setError('Please complete all required fields: User ID, Student Number, and Program.')
       return
     }
 
     setIsSaving(true)
 
     try {
+      // Transform form data to match API expectations
+      const apiData = {
+        userId: createForm.userId,
+        studentNumber: createForm.studentNumber,
+        program: createForm.program,
+        yearLevel: createForm.yearLevel,
+        gpa: createForm.gpa,
+        enrollmentStatus: createForm.enrollmentStatus
+      }
+      
       const response = await fetch('/api/student-profiles', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(createForm),
+        body: JSON.stringify(apiData),
       })
 
       const payload = await response.json()
@@ -156,10 +172,10 @@ export function StudentProfileManagement() {
   const onStartEdit = (profile: StudentProfileRecord) => {
     setEditingId(profile.id)
     setEditForm({
-      studentNumber: profile.studentNumber,
-      course: profile.course,
-      section: profile.section,
-      yearLevel: profile.yearLevel,
+      userId: profile.user_id,
+      studentNumber: profile.student_number,
+      program: profile.program,
+      yearLevel: profile.year_level || 1,
     })
   }
 
@@ -174,10 +190,18 @@ export function StudentProfileManagement() {
     setIsSaving(true)
 
     try {
-      const response = await fetch(`/api/student-profiles/${editingId}`, {
-        method: 'PATCH',
+      // Transform form data to match API expectations for updates
+      const updateData = {
+        user_id: editForm.userId,
+        student_number: editForm.studentNumber,
+        program: editForm.program,
+        year_level: editForm.yearLevel,
+      }
+      
+      const response = await fetch(`/api/student-profiles`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(editForm),
+        body: JSON.stringify({ id: editingId, ...updateData }),
       })
 
       const payload = await response.json()
@@ -229,22 +253,30 @@ export function StudentProfileManagement() {
       <CardContent className="space-y-4">
         {showCreate && (
           <form className="grid gap-3 md:grid-cols-4 rounded-lg border border-gray-700 bg-gray-800/40 p-4" onSubmit={onCreateProfile}>
+            <Input value={createForm.userId} onChange={(e) => setCreateForm((p) => ({ ...p, userId: e.target.value }))} placeholder="User ID" className="bg-gray-800 border-gray-700 text-white" />
             <Input value={createForm.studentNumber} onChange={(e) => setCreateForm((p) => ({ ...p, studentNumber: e.target.value }))} placeholder="Student Number" className="bg-gray-800 border-gray-700 text-white" />
-            <Input value={createForm.course} onChange={(e) => setCreateForm((p) => ({ ...p, course: e.target.value }))} placeholder="Course/Program" className="bg-gray-800 border-gray-700 text-white" />
-            <Input value={createForm.section} onChange={(e) => setCreateForm((p) => ({ ...p, section: e.target.value }))} placeholder="Section" className="bg-gray-800 border-gray-700 text-white" />
-            <select value={createForm.yearLevel} onChange={(e) => setCreateForm((p) => ({ ...p, yearLevel: e.target.value }))} className="h-10 rounded-md border border-gray-700 bg-gray-800 px-3 text-sm text-white">
+            <Input value={createForm.program} onChange={(e) => setCreateForm((p) => ({ ...p, program: e.target.value }))} placeholder="Program" className="bg-gray-800 border-gray-700 text-white" />
+            <select value={createForm.yearLevel} onChange={(e) => setCreateForm((p) => ({ ...p, yearLevel: Number(e.target.value) }))} className="h-10 rounded-md border border-gray-700 bg-gray-800 px-3 text-sm text-white">
               {yearLevels.map((year) => (
-                <option key={year} value={year}>{year}</option>
+                <option key={year} value={year}>{year}{year === 1 ? 'st' : year === 2 ? 'nd' : year === 3 ? 'rd' : 'th'} Year</option>
               ))}
             </select>
-            <label className="flex items-center gap-2 text-sm text-gray-300">
-              <input
-                type="checkbox"
-                checked={Boolean(createForm.assignDefaultCourses)}
-                onChange={(e) => setCreateForm((p) => ({ ...p, assignDefaultCourses: e.target.checked }))}
-              />
-              <span>Assign default courses for current semester</span>
-            </label>
+            <Input 
+              type="number" 
+              step="0.01" 
+              min="0" 
+              max="4" 
+              value={createForm.gpa || ''} 
+              onChange={(e) => setCreateForm((p) => ({ ...p, gpa: e.target.value ? Number(e.target.value) : undefined }))} 
+              placeholder="GPA (0.00-4.00)" 
+              className="bg-gray-800 border-gray-700 text-white" 
+            />
+            <select value={createForm.enrollmentStatus} onChange={(e) => setCreateForm((p) => ({ ...p, enrollmentStatus: e.target.value }))} className="h-10 rounded-md border border-gray-700 bg-gray-800 px-3 text-sm text-white">
+              <option value="enrolled">Enrolled</option>
+              <option value="suspended">Suspended</option>
+              <option value="graduated">Graduated</option>
+              <option value="withdrawn">Withdrawn</option>
+            </select>
             <div className="md:col-span-4 flex justify-end">
               <Button type="submit" disabled={isSaving} className="bg-green-600 hover:bg-green-700">{isSaving ? 'Saving...' : 'Create Profile'}</Button>
             </div>
@@ -255,7 +287,7 @@ export function StudentProfileManagement() {
           <Input
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search by student number, name, course, section..."
+            placeholder="Search by student number, name, program..."
             className="bg-gray-800 border-gray-700 text-white placeholder-gray-500"
           />
         </div>
@@ -269,29 +301,25 @@ export function StudentProfileManagement() {
               <tr className="border-b border-gray-700">
                 <th className="text-left py-3 px-4 text-gray-400">Student Number</th>
                 <th className="text-left py-3 px-4 text-gray-400">Name</th>
-                <th className="text-left py-3 px-4 text-gray-400">Course</th>
-                <th className="text-left py-3 px-4 text-gray-400">Section</th>
+                <th className="text-left py-3 px-4 text-gray-400">Program</th>
                 <th className="text-left py-3 px-4 text-gray-400">Year Level</th>
                 <th className="text-center py-3 px-4 text-gray-400">GPA</th>
-                <th className="text-center py-3 px-4 text-gray-400">Units Completed</th>
+                <th className="text-center py-3 px-4 text-gray-400">Enrollment Status</th>
                 <th className="text-center py-3 px-4 text-gray-400">Actions</th>
               </tr>
             </thead>
             <tbody>
               {paginatedProfiles.map((profile) => (
                 <tr key={profile.id} className="border-b border-gray-800 hover:bg-gray-800/50">
-                  <td className="py-3 px-4 text-white font-medium">{profile.studentNumber}</td>
-                  <td className="py-3 px-4 text-gray-300">{profile.user?.name ?? 'Unknown'}</td>
+                  <td className="py-3 px-4 text-white font-medium">{profile.student_number}</td>
+                  <td className="py-3 px-4 text-gray-300">{profile.users?.name ?? 'Unknown'}</td>
                   {editingId === profile.id ? (
                     <>
                       <td className="py-3 px-4">
-                        <Input value={editForm.course} onChange={(e) => setEditForm((p) => ({ ...p, course: e.target.value }))} className="bg-gray-700 border-gray-600 text-white" />
+                        <Input value={editForm.program} onChange={(e) => setEditForm((p) => ({ ...p, program: e.target.value }))} className="bg-gray-700 border-gray-600 text-white" />
                       </td>
                       <td className="py-3 px-4">
-                        <Input value={editForm.section} onChange={(e) => setEditForm((p) => ({ ...p, section: e.target.value }))} className="bg-gray-700 border-gray-600 text-white" />
-                      </td>
-                      <td className="py-3 px-4">
-                        <select value={editForm.yearLevel} onChange={(e) => setEditForm((p) => ({ ...p, yearLevel: e.target.value }))} className="h-8 rounded-md border border-gray-600 bg-gray-700 px-2 text-sm text-white">
+                        <select value={editForm.yearLevel} onChange={(e) => setEditForm((p) => ({ ...p, yearLevel: Number(e.target.value) }))} className="h-8 rounded-md border border-gray-600 bg-gray-700 px-2 text-sm text-white">
                           {yearLevels.map((year) => (
                             <option key={year} value={year}>{year}</option>
                           ))}
@@ -300,13 +328,12 @@ export function StudentProfileManagement() {
                     </>
                   ) : (
                     <>
-                      <td className="py-3 px-4 text-gray-300">{profile.course}</td>
-                      <td className="py-3 px-4 text-gray-300">{profile.section}</td>
-                      <td className="py-3 px-4 text-gray-300">{profile.yearLevel}</td>
+                      <td className="py-3 px-4 text-gray-300">{profile.program}</td>
+                      <td className="py-3 px-4 text-gray-300">{profile.year_level ? `${profile.year_level}${profile.year_level === 1 ? 'st' : profile.year_level === 2 ? 'nd' : profile.year_level === 3 ? 'rd' : 'th'} Year` : 'N/A'}</td>
                     </>
                   )}
-                  <td className="py-3 px-4 text-center text-gray-300">{profile.gpa.toFixed(2)}</td>
-                  <td className="py-3 px-4 text-center text-gray-300">{profile.unitsCompleted}</td>
+                  <td className="py-3 px-4 text-center text-gray-300">{profile.gpa?.toFixed(2) ?? 'N/A'}</td>
+                  <td className="py-3 px-4 text-center text-gray-300">{profile.enrollment_status}</td>
                   <td className="py-3 px-4 text-center">
                     {editingId === profile.id ? (
                       <div className="flex justify-center gap-2">

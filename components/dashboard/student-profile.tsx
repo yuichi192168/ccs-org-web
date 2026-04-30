@@ -10,10 +10,11 @@ interface StudentProfileProps {
     systemId?: string
   }
   profile?: {
-    studentNumber?: string
-    course?: string
-    section?: string
-    yearLevel?: string
+    student_number?: string
+    program?: string
+    year_level?: number | null
+    gpa?: number | null
+    enrollment_status?: string
   } | null
 }
 
@@ -36,23 +37,28 @@ export function StudentProfile({ student, profile }: StudentProfileProps) {
 
         <div>
           <h2 className="text-xl font-bold text-foreground">{student?.name ?? 'Student'}</h2>
-          <p className="text-sm text-muted-foreground">{profile?.studentNumber ?? student?.systemId ?? 'N/A'}</p>
+          <p className="text-sm text-muted-foreground">{profile?.student_number ?? student?.systemId ?? 'N/A'}</p>
         </div>
 
         <div className="w-full space-y-3 pt-4 border-t border-border">
           <div className="text-left">
-            <p className="text-xs font-semibold text-muted-foreground uppercase">Course</p>
-            <p className="text-sm text-foreground">{profile?.course ?? 'N/A'}</p>
-          </div>
-
-          <div className="text-left">
-            <p className="text-xs font-semibold text-muted-foreground uppercase">Section</p>
-            <p className="text-sm text-foreground">{profile?.section ?? 'N/A'}</p>
+            <p className="text-xs font-semibold text-muted-foreground uppercase">Program</p>
+            <p className="text-sm text-foreground">{profile?.program ?? 'N/A'}</p>
           </div>
 
           <div className="text-left">
             <p className="text-xs font-semibold text-muted-foreground uppercase">Year Level</p>
-            <p className="text-sm text-foreground">{profile?.yearLevel ?? 'N/A'}</p>
+            <p className="text-sm text-foreground">{profile?.year_level ? `${profile.year_level}${profile.year_level === 1 ? 'st' : profile.year_level === 2 ? 'nd' : profile.year_level === 3 ? 'rd' : 'th'} Year` : 'N/A'}</p>
+          </div>
+
+          <div className="text-left">
+            <p className="text-xs font-semibold text-muted-foreground uppercase">GPA</p>
+            <p className="text-sm text-foreground">{profile?.gpa?.toFixed(2) ?? 'N/A'}</p>
+          </div>
+
+          <div className="text-left">
+            <p className="text-xs font-semibold text-muted-foreground uppercase">Enrollment Status</p>
+            <p className="text-sm text-foreground">{profile?.enrollment_status ?? 'N/A'}</p>
           </div>
 
           <div className="text-left">

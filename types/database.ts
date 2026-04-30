@@ -55,13 +55,10 @@ export interface Database {
           id: string
           user_id: string
           student_number: string
-          course: string
-          section: string
-          year_level: string
-          admission_date: string
-          gpa: number
-          units_completed: number
-          units_enrolled: number
+          year_level: number | null
+          program: string
+          gpa: number | null
+          enrollment_status: string
           created_at: string
           updated_at: string
         }
@@ -69,13 +66,10 @@ export interface Database {
           id?: string
           user_id: string
           student_number: string
-          course: string
-          section: string
-          year_level: string
-          admission_date: string
-          gpa?: number
-          units_completed?: number
-          units_enrolled?: number
+          year_level?: number | null
+          program: string
+          gpa?: number | null
+          enrollment_status?: string
           created_at?: string
           updated_at?: string
         }
@@ -83,13 +77,10 @@ export interface Database {
           id?: string
           user_id?: string
           student_number?: string
-          course?: string
-          section?: string
-          year_level?: string
-          admission_date?: string
-          gpa?: number
-          units_completed?: number
-          units_enrolled?: number
+          year_level?: number | null
+          program?: string
+          gpa?: number | null
+          enrollment_status?: string
           created_at?: string
           updated_at?: string
         }
