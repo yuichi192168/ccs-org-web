@@ -1,21 +1,7 @@
-import { connectToDatabase } from '@/lib/mongodb'
-import {
-  AuditLog,
-  Course,
-  Enrollment,
-  User,
-  SystemSetting,
-} from '@/lib/system-models'
-import { normalizeError, serializeRecord } from '@/lib/api-resources'
+import { NextRequest } from 'next/server'
+import { mockUsers, mockCourses, mockEnrollments } from '@/lib/mock-data'
 
 export const runtime = 'nodejs'
-
-const MAX_STUDENTS_PER_COURSE = 50
-
-function normalizeCourseValue(value: unknown) {
-  const numericValue = Number(value ?? 0)
-  return Number.isFinite(numericValue) ? Math.min(Math.max(numericValue, 0), MAX_STUDENTS_PER_COURSE) : 0
-}
 
 function apiError(message: string, status: number, details?: Record<string, unknown>) {
   return Response.json(
@@ -38,64 +24,47 @@ function apiSuccess(data: unknown, status = 200) {
   )
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    await connectToDatabase()
+    // Calculate stats from mock data
+    const students = mockUsers.filter(user => user.role === 'student').length
+    const faculty = mockUsers.filter(user => user.role === 'faculty').length
+    const courses = mockCourses.filter(course => course.isActive).length
+    const activeEnrollments = mockEnrollments.filter(enrollment => enrollment.status === 'enrolled').length
+    
+    // Calculate average GPA (mock calculation)
+    const completedEnrollments = mockEnrollments.filter(enrollment => enrollment.status === 'completed' && enrollment.grade)
+    const averageGpa = completedEnrollments.length > 0 
+      ? completedEnrollments.reduce((sum, enrollment) => sum + (enrollment.grade! / 25), 0) / completedEnrollments.length 
+      : 3.0
 
-    const [studentCount, facultyCount, adminCount, courseCount, enrollmentCount, recentLogs, recentSettings, recentCourses] = await Promise.all([
-      User.countDocuments({ role: 'student' }),
-      User.countDocuments({ role: 'faculty' }),
-      User.countDocuments({ role: 'admin' }),
-      Course.countDocuments({}),
-      Enrollment.countDocuments({}),
-      AuditLog.find().sort({ occurredAt: -1 }).limit(8),
-      SystemSetting.find().sort({ key: 1 }).limit(10),
-      Course.find().sort({ createdAt: -1 }).limit(5),
-    ])
-
-    const activeEnrollments = await Enrollment.countDocuments({ status: 'enrolled' })
-    const averageGpaResult = await User.aggregate([
-      { $match: { role: 'student' } },
-      {
-        $lookup: {
-          from: 'studentprofiles',
-          localField: '_id',
-          foreignField: 'user',
-          as: 'profile',
-        },
-      },
-      { $unwind: '$profile' },
-      {
-        $group: {
-          _id: null,
-          averageGpa: { $avg: '$profile.gpa' },
-        },
-      },
-    ])
-
-    const averageGpa = averageGpaResult[0]?.averageGpa ?? 0
-
-    const normalizedRecentCourses = serializeRecord(recentCourses).map((course: any) => ({
-      ...course,
-      enrolledCount: normalizeCourseValue(course.enrolledCount),
-      capacity: normalizeCourseValue(course.capacity),
-    }))
-
-    return apiSuccess({
-      stats: {
-        students: studentCount,
-        faculty: facultyCount,
-        admins: adminCount,
-        courses: courseCount,
-        enrollments: enrollmentCount,
-        activeEnrollments,
-        averageGpa: Number(averageGpa.toFixed ? averageGpa.toFixed(2) : averageGpa),
-      },
-      recentLogs: serializeRecord(recentLogs),
-      recentSettings: serializeRecord(recentSettings),
-      recentCourses: normalizedRecentCourses,
+    // Get recent courses with enrollment data
+    const recentCourses = mockCourses.slice(0, 5).map(course => {
+      const enrolledCount = mockEnrollments.filter(enrollment => 
+        enrollment.courseId === course.id && enrollment.status === 'enrolled'
+      ).length
+      
+      return {
+        id: course.id,
+        code: course.courseCode,
+        enrolledCount,
+        capacity: 50, // Default capacity
+      }
     })
+
+    const overviewData = {
+      stats: {
+        students,
+        faculty,
+        courses,
+        activeEnrollments,
+        averageGpa: Number(averageGpa.toFixed(2)),
+      },
+      recentCourses,
+    }
+
+    return apiSuccess(overviewData)
   } catch (error) {
-    return apiError(normalizeError(error), 500)
+    return apiError(error instanceof Error ? error.message : 'Unknown error', 500)
   }
 }

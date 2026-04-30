@@ -21,32 +21,32 @@ export interface UserData {
 
 const demoUsers: Record<string, { email: string; password: string; user: UserData }> = {
   student: {
-    email: 'student@school.com',
+    email: 'john.smith@campus.edu',
     password: 'student123',
     user: {
-      id: 'STU001',
+      id: 'user-001',
       name: 'John Smith',
-      email: 'student@school.com',
+      email: 'john.smith@campus.edu',
       role: 'student',
     },
   },
   faculty: {
-    email: 'faculty.test@school.com',
+    email: 'michael.chen@campus.edu',
     password: 'faculty123',
     user: {
-      id: 'FAC001',
-      name: 'Test Faculty',
-      email: 'faculty.test@school.com',
+      id: 'user-003',
+      name: 'Dr. Michael Chen',
+      email: 'michael.chen@campus.edu',
       role: 'faculty',
     },
   },
   admin: {
-    email: 'admin@school.com',
+    email: 'admin@campus.edu',
     password: 'admin123',
     user: {
-      id: 'ADM001',
-      name: 'Admin User',
-      email: 'admin@school.com',
+      id: 'user-005',
+      name: 'System Administrator',
+      email: 'admin@campus.edu',
       role: 'admin',
     },
   },

@@ -1,12 +1,5 @@
 import { NextRequest } from 'next/server'
-import { connectToDatabase } from '@/lib/mongodb'
-import {
-  AdminProfile,
-  FacultyProfile,
-  StudentProfile,
-  User,
-} from '@/lib/system-models'
-import { normalizeError, serializeRecord } from '@/lib/api-resources'
+import { getMockUserByEmail, getMockStudentProfile, getMockFacultyProfile, getMockAdminProfile } from '@/lib/mock-data'
 
 export const runtime = 'nodejs'
 
@@ -37,26 +30,8 @@ function apiSuccess(data: unknown, status = 200) {
   )
 }
 
-function buildSafeUser(userRecord: any) {
-  const serializedUser = serializeRecord(userRecord) as Record<string, unknown> & { passwordHash?: string }
-  const { passwordHash: _passwordHash, ...safeUser } = serializedUser
-  return safeUser
-}
-
-function isValidPassword(inputPassword: string, storedPassword: string | undefined, userRole: unknown) {
-  if (!storedPassword) {
-    return false
-  }
-
-  if (inputPassword === storedPassword) {
-    return true
-  }
-
-  if (userRole !== 'student' && userRole !== 'faculty' && userRole !== 'admin') {
-    return false
-  }
-
-  return demoPasswordAliases[userRole].includes(inputPassword) && demoPasswordAliases[userRole].includes(storedPassword)
+function isValidPassword(inputPassword: string, userRole: string) {
+  return demoPasswordAliases[userRole as keyof typeof demoPasswordAliases]?.includes(inputPassword) || false
 }
 
 export async function POST(request: NextRequest) {
@@ -70,46 +45,38 @@ export async function POST(request: NextRequest) {
   const password = typeof body.password === 'string' ? body.password : ''
   const role = typeof body.role === 'string' ? body.role.trim().toLowerCase() : ''
 
-  if (!email || !password) {
-    return apiError('Email and password are required.', 400)
+  if (!email || !password || !role) {
+    return apiError('Email, password, and role are required.', 400)
   }
 
   try {
-    await connectToDatabase()
-
-    const query: Record<string, unknown> = { email }
-
-    if (role) {
-      query.role = role
-    }
-
-    const user = await User.findOne(query)
-
-    if (!user || !isValidPassword(password, user.passwordHash, user.role)) {
+    // Find user in mock data
+    const user = getMockUserByEmail(email)
+    
+    if (!user || !isValidPassword(password, role)) {
       return apiError('Invalid email or password.', 401)
     }
 
-    const safeUser = buildSafeUser(user)
-
-    let profile: unknown = null
-
-    if (user.role === 'student') {
-      profile = await StudentProfile.findOne({ user: user._id })
+    // Check if role matches
+    if (user.role !== role) {
+      return apiError('Invalid role for this user.', 401)
     }
 
-    if (user.role === 'faculty') {
-      profile = await FacultyProfile.findOne({ user: user._id })
-    }
+    let profile = null
 
-    if (user.role === 'admin') {
-      profile = await AdminProfile.findOne({ user: user._id })
+    if (role === 'student') {
+      profile = getMockStudentProfile(user.id)
+    } else if (role === 'faculty') {
+      profile = getMockFacultyProfile(user.id)
+    } else if (role === 'admin') {
+      profile = getMockAdminProfile(user.id)
     }
 
     return apiSuccess({
-      user: safeUser,
-      profile: profile ? serializeRecord(profile) : null,
+      user: user,
+      profile: profile,
     })
   } catch (error) {
-    return apiError(normalizeError(error), 500)
+    return apiError(error instanceof Error ? error.message : 'Unknown error', 500)
   }
 }

@@ -6,7 +6,6 @@ import { LoginPage, type UserData } from '@/components/login-page'
 import { StudentDashboard } from '@/components/dashboard/student-dashboard'
 import { FacultyDashboard } from '@/components/dashboard/faculty-dashboard'
 import { AdminDashboard } from '@/components/dashboard/admin-dashboard'
-import { initializeFirebase } from '@/lib/firebase'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, '') ?? ''
 
@@ -19,10 +18,7 @@ export default function Page() {
   const [selectedRole, setSelectedRole] = useState<UserRole | null>(null)
   const [currentUser, setCurrentUser] = useState<UserData | null>(null)
 
-  useEffect(() => {
-    initializeFirebase()
-  }, [])
-
+  
   useEffect(() => {
     let isMounted = true
 
@@ -38,35 +34,13 @@ export default function Page() {
           return
         }
 
-        let resolvedSession = parsedSession
-
-        try {
-          const response = await fetch(
-            `/api/users?email=${encodeURIComponent(parsedSession.email)}&role=${parsedSession.role}&limit=1`
-          )
-          const payload = await response.json()
-          const matchedUser = Array.isArray(payload?.data) ? payload.data[0] : null
-
-          if (response.ok && payload?.success && matchedUser) {
-            resolvedSession = {
-              id: matchedUser.id || matchedUser.systemId || parsedSession.id,
-              name: matchedUser.name || parsedSession.name,
-              email: matchedUser.email || parsedSession.email,
-              role: matchedUser.role || parsedSession.role,
-            }
-          }
-        } catch {
-          // Keep parsed session when live lookup fails.
-        }
-
         if (!isMounted) {
           return
         }
 
-        setCurrentUser(resolvedSession)
-        setSelectedRole(resolvedSession.role)
+        setCurrentUser(parsedSession)
+        setSelectedRole(parsedSession.role)
         setAppState('dashboard')
-        localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(resolvedSession))
       } catch {
         localStorage.removeItem(SESSION_STORAGE_KEY)
       }

@@ -10,6 +10,9 @@ const nextConfig = {
   typescript: {
     tsconfigPath: './tsconfig.json',
   },
+  webpack: (config) => {
+  return config;
+}
 }
 
 export default nextConfig

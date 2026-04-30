@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { getMockEnrollments } from '@/lib/mock-data'
+import { mockAcademicHistory } from '@/lib/mock-data'
 
 export const runtime = 'nodejs'
 
@@ -30,36 +30,35 @@ export async function GET(request: NextRequest) {
     const studentId = searchParams.get('studentId')
     const courseId = searchParams.get('courseId')
     const semester = searchParams.get('semester')
-    const status = searchParams.get('status')
 
-    let enrollments = getMockEnrollments()
+    // Get all academic history data
+    let academicHistory = mockAcademicHistory
 
     // Filter by student
     if (studentId) {
-      enrollments = enrollments.filter(enrollment => enrollment.studentId === studentId)
+      academicHistory = academicHistory.filter(history => history.studentId === studentId)
     }
 
     // Filter by course
     if (courseId) {
-      enrollments = enrollments.filter(enrollment => enrollment.courseId === courseId)
+      academicHistory = academicHistory.filter(history => history.courseId === courseId)
     }
 
     // Filter by semester
     if (semester) {
-      enrollments = enrollments.filter(enrollment => 
-        enrollment.semester.toLowerCase().includes(semester.toLowerCase())
+      academicHistory = academicHistory.filter(history => 
+        history.semester.toLowerCase().includes(semester.toLowerCase())
       )
     }
 
-    // Filter by status
-    if (status) {
-      enrollments = enrollments.filter(enrollment => enrollment.status === status)
-    }
+    // Sort by academic year and semester
+    academicHistory.sort((a, b) => {
+      const dateA = new Date(`${a.academicYear}-${a.semester}-01`).getTime()
+      const dateB = new Date(`${b.academicYear}-${b.semester}-01`).getTime()
+      return dateB - dateA
+    })
 
-    // Sort by enrollment date
-    enrollments.sort((a, b) => new Date(b.enrolledAt).getTime() - new Date(a.enrolledAt).getTime())
-
-    return apiSuccess(enrollments)
+    return apiSuccess(academicHistory)
   } catch (error) {
     return apiError(error instanceof Error ? error.message : 'Unknown error', 500)
   }

@@ -79,11 +79,23 @@ export function AdminDashboard({ onLogout, currentUser }: AdminDashboardProps) {
   }, [querySection, activeSection, validSections])
 
   return (
-    <div className="min-h-screen bg-background">
-      <AdminSidebar activeSection={activeSection} onSectionChange={updateSection} />
+    <div className="flex min-h-screen bg-background">
+      {/* Sidebar - Fixed on desktop, hidden on mobile */}
+      <div className="hidden md:block">
+        <AdminSidebar activeSection={activeSection} onSectionChange={updateSection} />
+      </div>
       
-      <main className="md:ml-64">
+      {/* Mobile Sidebar Overlay */}
+      {activeSection && (
+        <div className="md:hidden fixed inset-0 z-50 bg-black/50">
+          <div className="fixed left-0 top-0 w-64 h-full">
+            <AdminSidebar activeSection={activeSection} onSectionChange={updateSection} />
+          </div>
+        </div>
+      )}
       
+      {/* Main Content */}
+      <main className="flex-1 md:ml-0">
         <AdminHeader
           onLogout={onLogout}
           currentUser={currentUser}
@@ -100,7 +112,7 @@ export function AdminDashboard({ onLogout, currentUser }: AdminDashboardProps) {
           {activeSection === 'documents' && <StudentDocumentManagement />}
           {activeSection === 'organizations' && <StudentOrganizationManagement />}
           {/* {activeSection === 'academic-history' && <AcademicHistoryManagement />} */}
-          {activeSection === 'arade-scales' && <GradeScaleManagement />}
+          {activeSection === 'grade-scales' && <GradeScaleManagement />}
           {activeSection === 'course-prerequisites' && <CoursePrerequisiteManagement />}
           {activeSection === 'medical-records' && <MedicalRecordManagement />}
           {activeSection === 'discipline-records' && <DisciplineRecordManagement />}
