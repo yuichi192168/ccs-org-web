@@ -24,9 +24,10 @@ interface RecentGradesProps {
     systemId?: string
   }
   profile?: {
-    course?: string
-    section?: string
-    yearLevel?: string
+    program?: string
+    year_level?: number | null
+    gpa?: number | null
+    enrollment_status?: string
   } | null
   fullWidth?: boolean
 }
@@ -75,10 +76,13 @@ export function RecentGrades({ grades, progress, student, profile, fullWidth }: 
     y += 18
     document.text(`Student: ${student?.name ?? 'N/A'} (${student?.systemId ?? 'N/A'})`, 40, y)
     y += 14
-    document.text(`Program: ${profile?.course ?? 'N/A'}`, 40, y)
+    document.text(`Program: ${profile?.program ?? 'N/A'}`, 40, y)
     y += 14
-    document.text(`Section / Year: ${profile?.section ?? 'N/A'} / ${profile?.yearLevel ?? 'N/A'}`, 40, y)
+    document.text(`Year Level: ${profile?.year_level ?? 'N/A'}`, 40, y)
     y += 14
+    document.text(`GPA: ${profile?.gpa?.toFixed(2) ?? 'N/A'}`, 40, y)
+    y += 14
+    document.text(`Enrollment Status: ${profile?.enrollment_status ?? 'N/A'}`, 40, y)
     document.text(`Semester GPA: ${progress?.cumulativeGPA?.toFixed(2) ?? 'N/A'}`, 40, y)
 
     y += 24

@@ -29,11 +29,11 @@ type StudentDashboardData = {
     systemId: string
   }
   profile: {
-    studentNumber: string
-    course: string
-    section: string
-    yearLevel: string
-    admissionDate?: string
+    student_number?: string
+    program?: string
+    year_level?: number | null
+    gpa?: number | null
+    enrollment_status?: string
   } | null
   progress: {
     cumulativeGPA: number
