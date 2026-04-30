@@ -114,7 +114,7 @@ export async function POST(request: NextRequest) {
 
     const supabase = createAdminClient() as any
 
-    const insertData = {
+    const insertData: Record<string, any> = {
       student_id: studentId,
       document_type: documentType,
       document_name: documentName,
