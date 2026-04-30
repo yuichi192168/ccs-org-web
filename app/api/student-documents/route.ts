@@ -112,9 +112,9 @@ export async function POST(request: NextRequest) {
       return apiError('Missing required fields: studentId, documentType, documentName, filePath', 400)
     }
 
-    const supabase = createAdminClient()
+    const supabase = createAdminClient() as any
 
-    const insertData: any = {
+    const insertData = {
       student_id: studentId,
       document_type: documentType,
       document_name: documentName,
@@ -152,11 +152,11 @@ export async function PUT(request: NextRequest) {
       return apiError('Student document ID is required', 400)
     }
 
-    const supabase = createAdminClient()
+    const supabase = createAdminClient() as any
 
     const { data, error } = await supabase
       .from('student_documents')
-      .update(updates as any)
+      .update(updates)
       .eq('id', id)
       .select()
       .single()

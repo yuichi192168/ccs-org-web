@@ -118,9 +118,9 @@ export async function POST(request: NextRequest) {
       return apiError('Missing required fields: studentId, incidentDate, offense, severity', 400)
     }
 
-    const supabase = createAdminClient()
+    const supabase = createAdminClient() as any
 
-    const insertData: any = {
+    const insertData: Record<string, any> = {
       student_id: studentId,
       incident_date: incidentDate,
       offense,
@@ -158,11 +158,11 @@ export async function PUT(request: NextRequest) {
       return apiError('Discipline record ID is required', 400)
     }
 
-    const supabase = createAdminClient()
+    const supabase = createAdminClient() as any
 
     const { data, error } = await supabase
       .from('discipline_records')
-      .update(updates as any)
+      .update(updates)
       .eq('id', id)
       .select()
       .single()

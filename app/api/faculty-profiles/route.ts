@@ -105,7 +105,7 @@ export async function POST(request: NextRequest) {
       return apiError('Missing required fields: userId, employeeId, department, position, hireDate', 400)
     }
 
-    const supabase = createAdminClient()
+    const supabase = createAdminClient() as any
 
     const { data, error } = await supabase
       .from('faculty_profiles')

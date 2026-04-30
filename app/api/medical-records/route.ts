@@ -112,9 +112,9 @@ export async function POST(request: NextRequest) {
       return apiError('Missing required fields: studentId, condition', 400)
     }
 
-    const supabase = createAdminClient()
+    const supabase = createAdminClient() as any
 
-    const insertData: any = {
+    const insertData: Record<string, any> = {
       student_id: studentId,
       condition
     }
@@ -154,11 +154,11 @@ export async function PUT(request: NextRequest) {
       return apiError('Medical record ID is required', 400)
     }
 
-    const supabase = createAdminClient()
+    const supabase = createAdminClient() as any
 
     const { data, error } = await supabase
       .from('medical_records')
-      .update(updates as any)
+      .update(updates)
       .eq('id', id)
       .select()
       .single()

@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
       return apiError('Missing required fields: courseId, prerequisiteCourseId', 400)
     }
 
-    const supabase = createAdminClient()
+    const supabase = createAdminClient() as any
 
     const { data, error } = await supabase
       .from('course_prerequisites')
@@ -141,11 +141,11 @@ export async function PUT(request: NextRequest) {
       return apiError('Course prerequisite ID is required', 400)
     }
 
-    const supabase = createAdminClient()
+    const supabase = createAdminClient() as any
 
     const { data, error } = await supabase
       .from('course_prerequisites')
-      .update(updates as any)
+      .update(updates)
       .eq('id', id)
       .select()
       .single()

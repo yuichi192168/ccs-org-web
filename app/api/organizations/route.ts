@@ -104,9 +104,9 @@ export async function POST(request: NextRequest) {
       return apiError('Missing required fields: name, category', 400)
     }
 
-    const supabase = createAdminClient()
+    const supabase = createAdminClient() as any
 
-    const insertData: any = {
+    const insertData = {
       name,
       category
     }
@@ -143,11 +143,11 @@ export async function PUT(request: NextRequest) {
       return apiError('Organization ID is required', 400)
     }
 
-    const supabase = createAdminClient()
+    const supabase = createAdminClient() as any
 
     const { data, error } = await supabase
       .from('student_organizations')
-      .update(updates as any)
+      .update(updates)
       .eq('id', id)
       .select()
       .single()

@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
       return apiError('Missing required fields: name, minScore, maxScore, gradeLetter, gradePoints', 400)
     }
 
-    const supabase = createAdminClient()
+    const supabase = createAdminClient() as any
 
     const { data, error } = await supabase
       .from('grade_scales')
@@ -133,11 +133,11 @@ export async function PUT(request: NextRequest) {
       return apiError('Grade scale ID is required', 400)
     }
 
-    const supabase = createAdminClient()
+    const supabase = createAdminClient() as any
 
     const { data, error } = await supabase
       .from('grade_scales')
-      .update(updates as any)
+      .update(updates)
       .eq('id', id)
       .select()
       .single()

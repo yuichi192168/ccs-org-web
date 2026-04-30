@@ -132,8 +132,9 @@ export async function POST(request: NextRequest) {
     console.log('Auth user created successfully:', authData.user.id)
 
     // Then, create user in public.users table
+    const supabaseAny = createAdminClient() as any
     console.log('Creating public user profile...')
-    const { data: userData, error: userError } = await supabase
+    const { data: userData, error: userError } = await supabaseAny
       .from('users')
       .insert({
         id: authData.user.id,
