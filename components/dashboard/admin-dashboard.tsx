@@ -95,7 +95,7 @@ export function AdminDashboard({ onLogout, currentUser }: AdminDashboardProps) {
       )}
       
       {/* Main Content */}
-      <main className="flex-1 md:ml-0">
+      <main className="flex-1 md:ml-64">
         <AdminHeader
           onLogout={onLogout}
           currentUser={currentUser}

@@ -1,13 +1,9 @@
 import { NextRequest } from 'next/server'
-import { getMockUserByEmail, getMockStudentProfile, getMockFacultyProfile, getMockAdminProfile } from '@/lib/mock-data'
+import { createServiceClient } from '@/lib/supabaseClient'
 
 export const runtime = 'nodejs'
 
-const demoPasswordAliases: Record<'student' | 'faculty' | 'admin', string[]> = {
-  student: ['student123', 'demo-student-password'],
-  faculty: ['faculty123', 'demo-faculty-password'],
-  admin: ['admin123', 'demo-admin-password'],
-}
+const supabase = createServiceClient()
 
 function apiError(message: string, status: number, details?: Record<string, unknown>) {
   return Response.json(
@@ -30,53 +26,77 @@ function apiSuccess(data: unknown, status = 200) {
   )
 }
 
-function isValidPassword(inputPassword: string, userRole: string) {
-  return demoPasswordAliases[userRole as keyof typeof demoPasswordAliases]?.includes(inputPassword) || false
-}
-
 export async function POST(request: NextRequest) {
-  const body = await request.json().catch(() => null)
-
-  if (!body || typeof body !== 'object') {
-    return apiError('Email and password are required.', 400)
-  }
-
-  const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : ''
-  const password = typeof body.password === 'string' ? body.password : ''
-  const role = typeof body.role === 'string' ? body.role.trim().toLowerCase() : ''
-
-  if (!email || !password || !role) {
-    return apiError('Email, password, and role are required.', 400)
-  }
-
   try {
-    // Find user in mock data
-    const user = getMockUserByEmail(email)
-    
-    if (!user || !isValidPassword(password, role)) {
-      return apiError('Invalid email or password.', 401)
+    const body = await request.json()
+
+    if (!body || typeof body !== 'object') {
+      return apiError('Email and password are required.', 400)
     }
 
-    // Check if role matches
-    if (user.role !== role) {
-      return apiError('Invalid role for this user.', 401)
+    const { email, password, role } = body
+
+    if (!email || !password || !role) {
+      return apiError('Email, password, and role are required.', 400)
     }
 
+    // Authenticate with Supabase
+    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+      email: email.toLowerCase(),
+      password,
+    })
+
+    if (authError) {
+      return apiError('Invalid email or password.', 401, { details: authError })
+    }
+
+    if (!authData.user) {
+      return apiError('Authentication failed.', 401)
+    }
+
+    // Get user profile based on role
     let profile = null
+    const userId = authData.user.id
 
     if (role === 'student') {
-      profile = getMockStudentProfile(user.id)
+      const { data: studentProfile } = await supabase
+        .from('student_profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .single()
+      profile = studentProfile
     } else if (role === 'faculty') {
-      profile = getMockFacultyProfile(user.id)
+      const { data: facultyProfile } = await supabase
+        .from('faculty_profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .single()
+      profile = facultyProfile
     } else if (role === 'admin') {
-      profile = getMockAdminProfile(user.id)
+      const { data: adminProfile } = await supabase
+        .from('admin_profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .single()
+      profile = adminProfile
     }
 
     return apiSuccess({
-      user: user,
-      profile: profile,
+      user: {
+        id: authData.user.id,
+        email: authData.user.email!,
+        name: authData.user.user_metadata?.name || authData.user.email!.split('@')[0],
+        role: role as 'student' | 'faculty' | 'admin',
+        systemId: authData.user.user_metadata?.system_id || `SYS-${role.toUpperCase()}-${authData.user.id?.slice(-6)}`,
+        status: 'active',
+        joinedAt: authData.user.created_at,
+        lastLoginAt: new Date().toISOString(),
+        createdAt: authData.user.created_at,
+        updatedAt: authData.user.updated_at,
+      },
+      profile,
     })
   } catch (error) {
-    return apiError(error instanceof Error ? error.message : 'Unknown error', 500)
+    return apiError(error instanceof Error ? error.message : 'Authentication failed', 500)
   }
 }

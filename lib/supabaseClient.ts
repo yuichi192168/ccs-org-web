@@ -52,10 +52,15 @@ export function createServiceClient() {
       autoRefreshToken: false,
       persistSession: false,
     },
+    global: {
+      headers: {
+        'x-admin-operation': 'true',
+      },
+    },
   })
 }
 
-// Helper function to create admin client for privileged operations
+// Helper function to create a server-side admin client with proper auth context
 export function createAdminClient() {
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
   
@@ -155,15 +160,40 @@ export const db = {
     return { data, error }
   },
 
-  // async updateUser(userId: string, updates: any) {
-  //   const { data, error } = await supabase
-  //     .from('users')
-  //     .update(updates as any)
-  //     .eq('id', userId)
-  //     .select()
-  //     .single()
-  //   return { data, error }
-  // },
+  async updateUser(userId: string, updates: any) {
+    const { data, error } = await supabase
+      .from('users')
+      .update(updates as any)
+      .eq('id', userId)
+      .select()
+      .single()
+    return { data, error }
+  },
+
+  async createUser(userData: any) {
+    const { data, error } = await supabase
+      .from('users')
+      .insert(userData as any)
+      .select()
+      .single()
+    return { data, error }
+  },
+
+  async deleteUser(userId: string) {
+    const { data, error } = await supabase
+      .from('users')
+      .delete()
+      .eq('id', userId)
+    return { data, error }
+  },
+
+  async getAllUsers() {
+    const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .order('created_at', { ascending: false })
+    return { data, error }
+  },
 
   // Student Profiles
   async getStudentProfile(userId: string) {
@@ -175,15 +205,40 @@ export const db = {
     return { data, error }
   },
 
-  // async updateStudentProfile(profileId: string, updates: any) {
-  //   const { data, error } = await supabase
-  //     .from('student_profiles')
-  //     .update(updates as any)
-  //     .eq('id', profileId)
-  //     .select()
-  //     .single()
-  //   return { data, error }
-  // },
+  async updateStudentProfile(profileId: string, updates: any) {
+    const { data, error } = await supabase
+      .from('student_profiles')
+      .update(updates as any)
+      .eq('id', profileId)
+      .select()
+      .single()
+    return { data, error }
+  },
+
+  async createStudentProfile(profileData: any) {
+    const { data, error } = await supabase
+      .from('student_profiles')
+      .insert(profileData as any)
+      .select()
+      .single()
+    return { data, error }
+  },
+
+  async deleteStudentProfile(profileId: string) {
+    const { data, error } = await supabase
+      .from('student_profiles')
+      .delete()
+      .eq('id', profileId)
+    return { data, error }
+  },
+
+  async getAllStudentProfiles() {
+    const { data, error } = await supabase
+      .from('student_profiles')
+      .select('*')
+      .order('created_at', { ascending: false })
+    return { data, error }
+  },
 
   // Faculty Profiles
   async getFacultyProfile(userId: string) {
@@ -195,6 +250,41 @@ export const db = {
     return { data, error }
   },
 
+  async updateFacultyProfile(profileId: string, updates: any) {
+    const { data, error } = await supabase
+      .from('faculty_profiles')
+      .update(updates as any)
+      .eq('id', profileId)
+      .select()
+      .single()
+    return { data, error }
+  },
+
+  async createFacultyProfile(profileData: any) {
+    const { data, error } = await supabase
+      .from('faculty_profiles')
+      .insert(profileData as any)
+      .select()
+      .single()
+    return { data, error }
+  },
+
+  async deleteFacultyProfile(profileId: string) {
+    const { data, error } = await supabase
+      .from('faculty_profiles')
+      .delete()
+      .eq('id', profileId)
+    return { data, error }
+  },
+
+  async getAllFacultyProfiles() {
+    const { data, error } = await supabase
+      .from('faculty_profiles')
+      .select('*')
+      .order('created_at', { ascending: false })
+    return { data, error }
+  },
+
   // Courses
   async getCourses() {
     const { data, error } = await supabase
@@ -202,6 +292,42 @@ export const db = {
       .select('*')
       .eq('is_active', true)
       .order('course_code')
+    return { data, error }
+  },
+
+  async getCourse(courseId: string) {
+    const { data, error } = await supabase
+      .from('courses')
+      .select('*')
+      .eq('id', courseId)
+      .single()
+    return { data, error }
+  },
+
+  async createCourse(courseData: any) {
+    const { data, error } = await supabase
+      .from('courses')
+      .insert(courseData as any)
+      .select()
+      .single()
+    return { data, error }
+  },
+
+  async updateCourse(courseId: string, updates: any) {
+    const { data, error } = await supabase
+      .from('courses')
+      .update(updates as any)
+      .eq('id', courseId)
+      .select()
+      .single()
+    return { data, error }
+  },
+
+  async deleteCourse(courseId: string) {
+    const { data, error } = await supabase
+      .from('courses')
+      .delete()
+      .eq('id', courseId)
     return { data, error }
   },
 
@@ -218,6 +344,50 @@ export const db = {
     return { data, error }
   },
 
+  async getEnrollment(enrollmentId: string) {
+    const { data, error } = await supabase
+      .from('enrollments')
+      .select('*')
+      .eq('id', enrollmentId)
+      .single()
+    return { data, error }
+  },
+
+  async createEnrollment(enrollmentData: any) {
+    const { data, error } = await supabase
+      .from('enrollments')
+      .insert(enrollmentData as any)
+      .select()
+      .single()
+    return { data, error }
+  },
+
+  async updateEnrollment(enrollmentId: string, updates: any) {
+    const { data, error } = await supabase
+      .from('enrollments')
+      .update(updates as any)
+      .eq('id', enrollmentId)
+      .select()
+      .single()
+    return { data, error }
+  },
+
+  async deleteEnrollment(enrollmentId: string) {
+    const { data, error } = await supabase
+      .from('enrollments')
+      .delete()
+      .eq('id', enrollmentId)
+    return { data, error }
+  },
+
+  async getAllEnrollments() {
+    const { data, error } = await supabase
+      .from('enrollments')
+      .select('*')
+      .order('created_at', { ascending: false })
+    return { data, error }
+  },
+
   // Notifications
   async getUserNotifications(userId: string, limit = 10) {
     const { data, error } = await supabase
@@ -229,15 +399,59 @@ export const db = {
     return { data, error }
   },
 
-  // async markNotificationAsRead(notificationId: string) {
-  //   const { data, error } = await supabase
-  //     .from('notifications')
-  //     .update({ is_read: true, read_at: new Date().toISOString() } as any)
-  //     .eq('id', notificationId)
-  //     .select()
-  //     .single()
-  //   return { data, error }
-  // },
+  async getNotification(notificationId: string) {
+    const { data, error } = await supabase
+      .from('notifications')
+      .select('*')
+      .eq('id', notificationId)
+      .single()
+    return { data, error }
+  },
+
+  async createNotification(notificationData: any) {
+    const { data, error } = await supabase
+      .from('notifications')
+      .insert(notificationData as any)
+      .select()
+      .single()
+    return { data, error }
+  },
+
+  async updateNotification(notificationId: string, updates: any) {
+    const { data, error } = await supabase
+      .from('notifications')
+      .update(updates as any)
+      .eq('id', notificationId)
+      .select()
+      .single()
+    return { data, error }
+  },
+
+  async markNotificationAsRead(notificationId: string) {
+    const { data, error } = await supabase
+      .from('notifications')
+      .update({ is_read: true, read_at: new Date().toISOString() } as any)
+      .eq('id', notificationId)
+      .select()
+      .single()
+    return { data, error }
+  },
+
+  async deleteNotification(notificationId: string) {
+    const { data, error } = await supabase
+      .from('notifications')
+      .delete()
+      .eq('id', notificationId)
+    return { data, error }
+  },
+
+  async getAllNotifications() {
+    const { data, error } = await supabase
+      .from('notifications')
+      .select('*')
+      .order('created_at', { ascending: false })
+    return { data, error }
+  },
 
   // Real-time subscriptions
   subscribeToNotifications(userId: string, callback: (payload: any) => void) {
