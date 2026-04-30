@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabaseServer'
+import type { Database } from '@/types/database'
 
-export const runtime = 'nodejs'
+type Tables = Database['public']['Tables']
 
 function apiError(message: string, status: number, details?: Record<string, unknown>) {
   console.error('API Error:', { message, status, details })
@@ -132,18 +133,18 @@ export async function POST(request: NextRequest) {
     console.log('Auth user created successfully:', authData.user.id)
 
     // Then, create user in public.users table
-    const supabaseAny = createAdminClient() as any
     console.log('Creating public user profile...')
-    const { data: userData, error: userError } = await supabaseAny
+    const userInsertData: Tables['users']['Insert'] = {
+      id: authData.user.id,
+      name,
+      email: email.toLowerCase(),
+      role,
+      system_id: systemId,
+      status: 'active'
+    }
+    const { data: userData, error: userError } = await supabase
       .from('users')
-      .insert({
-        id: authData.user.id,
-        name,
-        email: email.toLowerCase(),
-        role,
-        system_id: systemId,
-        status: 'active'
-      })
+      .insert(userInsertData)
       .select()
       .single()
 
@@ -218,7 +219,7 @@ export async function DELETE(request: NextRequest) {
       return apiError('User ID is required', 400)
     }
 
-    const supabase = createAdminClient()
+    const supabase = createAdminClient() as any
 
     // First, delete from public.users table
     const { error: userError } = await supabase
