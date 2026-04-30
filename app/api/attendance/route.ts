@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabaseServer'
+import type { Database } from '@/types/database'
 
 export const runtime = 'nodejs'
 
@@ -129,15 +130,14 @@ export async function POST(request: NextRequest) {
 
     const supabase = createAdminClient()
 
-    const insertData: any = {
+    const insertData = {
         student_id: studentId,
         course_id: courseId,
         date,
-        status
+        status,
+        remarks: remarks || null,
+        recorded_by: recordedBy || null
       }
-
-    if (remarks) insertData.remarks = remarks
-    if (recordedBy) insertData.recorded_by = recordedBy
 
     const { data, error } = await supabase
       .from('attendance')
@@ -161,7 +161,7 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json()
-    const { id, ...updates } = body
+    const { id, studentId, courseId, date, status, remarks, recordedBy } = body
 
     if (!id) {
       return apiError('Attendance record ID is required', 400)
@@ -169,9 +169,18 @@ export async function PUT(request: NextRequest) {
 
     const supabase = createAdminClient()
 
+    // Build update object with only provided fields
+    const updateData: any = {}
+    if (studentId !== undefined) updateData.student_id = studentId
+    if (courseId !== undefined) updateData.course_id = courseId
+    if (date !== undefined) updateData.date = date
+    if (status !== undefined) updateData.status = status
+    if (remarks !== undefined) updateData.remarks = remarks
+    if (recordedBy !== undefined) updateData.recorded_by = recordedBy
+
     const { data, error } = await supabase
       .from('attendance')
-      .update(updates as any)
+      .update(updateData)
       .eq('id', id)
       .select()
       .single()
