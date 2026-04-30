@@ -128,7 +128,7 @@ export async function POST(request: NextRequest) {
       return apiError('Missing required fields: studentId, courseId, date, status', 400)
     }
 
-    const supabase = createAdminClient()
+    const supabase = createAdminClient() as any
 
     const insertData = {
         student_id: studentId,
@@ -167,10 +167,10 @@ export async function PUT(request: NextRequest) {
       return apiError('Attendance record ID is required', 400)
     }
 
-    const supabase = createAdminClient()
+    const supabase = createAdminClient() as any
 
     // Build update object with only provided fields
-    const updateData: any = {}
+    const updateData: Record<string, any> = {}
     if (studentId !== undefined) updateData.student_id = studentId
     if (courseId !== undefined) updateData.course_id = courseId
     if (date !== undefined) updateData.date = date
