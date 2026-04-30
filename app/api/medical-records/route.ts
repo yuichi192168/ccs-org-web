@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
 
     console.log('Query params:', { limit, page, sort, order, search, studentId })
 
-    const supabase = createAdminClient()
+    const supabase = createAdminClient() as any
 
     // Build query with server-side pagination and sorting
     let query = supabase
@@ -183,7 +183,7 @@ export async function DELETE(request: NextRequest) {
       return apiError('Medical record ID is required', 400)
     }
 
-    const supabase = createAdminClient()
+    const supabase = createAdminClient() as any
 
     const { error } = await supabase
       .from('medical_records')

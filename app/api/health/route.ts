@@ -23,7 +23,7 @@ export async function GET() {
     }
 
     // Test Supabase connection
-    const supabase = createAdminClient()
+    const supabase = createAdminClient() as any
     
     // Simple test query
     const { data, error } = await supabase

@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
 
     console.log('Query params:', { limit, page, sort, order, search })
 
-    const supabase = createAdminClient()
+    const supabase = createAdminClient() as any
 
     // Build query with server-side pagination and sorting
     let query = supabase
@@ -106,7 +106,7 @@ export async function POST(request: NextRequest) {
 
     const supabase = createAdminClient() as any
 
-    const insertData = {
+    const insertData: Record<string, any> = {
       name,
       category
     }
@@ -172,7 +172,7 @@ export async function DELETE(request: NextRequest) {
       return apiError('Organization ID is required', 400)
     }
 
-    const supabase = createAdminClient()
+    const supabase = createAdminClient() as any
 
     const { error } = await supabase
       .from('student_organizations')

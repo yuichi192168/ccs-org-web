@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
 
     console.log('Query params:', { role, limit, page, sort, order, search })
 
-    const supabase = createAdminClient()
+    const supabase = createAdminClient() as any
     console.log('Supabase admin client created successfully')
 
     // Build query with server-side pagination and sorting
@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
       return apiError('Missing required fields: name, email, role, systemId', 400)
     }
 
-    const supabase = createAdminClient()
+    const supabase = createAdminClient() as any
     console.log('Supabase admin client created successfully')
 
     // First, create user in auth.users
