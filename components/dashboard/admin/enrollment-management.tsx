@@ -184,7 +184,7 @@ export function EnrollmentManagement() {
     try {
       const [enrollmentData, studentData, courseData] = await Promise.all([
         fetchAllPages<EnrollmentRecord>((page) =>
-          `/api/enrollments?populate=student,course&limit=${API_PAGE_LIMIT}&page=${page}&sort=createdAt&order=desc`
+          `/api/enrollments?populate=student,course&limit=${API_PAGE_LIMIT}&page=${page}&sort=created_at&order=desc`
         ),
         fetchAllPages<StudentOption>((page) =>
           `/api/users?role=student&limit=${API_PAGE_LIMIT}&page=${page}&sort=name&order=asc`

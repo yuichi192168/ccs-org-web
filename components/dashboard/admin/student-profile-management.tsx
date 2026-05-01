@@ -73,7 +73,7 @@ export function StudentProfileManagement() {
 
       while (page <= totalPages) {
         const response = await fetch(
-          `/api/student-profiles?limit=${API_PAGE_LIMIT}&page=${page}&sort=-createdAt&populate=user`
+          `/api/student-profiles?limit=${API_PAGE_LIMIT}&page=${page}&sort=created_at&order=desc`
         )
         const payload = await response.json()
 

@@ -53,7 +53,7 @@ export function CoursePrerequisiteManagement() {
 
     try {
       const [prerequisiteResponse, coursesResponse] = await Promise.all([
-        fetch('/api/course-prerequisites?limit=500&populate=course,prerequisiteCourse&sort=createdAt&order=desc'),
+        fetch('/api/course-prerequisites?limit=500&populate=course,prerequisiteCourse&sort=created_at&order=desc'),
         fetch('/api/courses?limit=500&sort=code&order=asc'),
       ])
 

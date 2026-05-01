@@ -13,7 +13,7 @@ interface Document {
   fileName: string;
   fileUrl: string;
   status: string;
-  createdAt: string;
+  created_at: string;
   category: string;
 }
 
@@ -53,7 +53,7 @@ export function StudentDocuments({ studentId, documents }: StudentDocumentsProps
   }, [documents]);
 
   const sortedItems = useMemo(() => {
-    return [...items].sort((left, right) => new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime());
+    return [...items].sort((left, right) => new Date(right.created_at).getTime() - new Date(left.created_at).getTime());
   }, [items]);
 
   const loadDocuments = async () => {
@@ -322,7 +322,7 @@ export function StudentDocuments({ studentId, documents }: StudentDocumentsProps
                   <div className="flex-1">
                     <p className="font-medium text-white text-sm">{doc.title}</p>
                     <div className="flex items-center gap-2 mt-1 text-xs">
-                      <span className="text-gray-400">{new Date(doc.createdAt).toLocaleDateString()}</span>
+                      <span className="text-gray-400">{new Date(doc.created_at).toLocaleDateString()}</span>
                       <span className="text-gray-500">•</span>
                       <span className="text-gray-400">{doc.fileName}</span>
                       <span className="text-gray-500">•</span>

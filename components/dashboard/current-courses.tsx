@@ -118,7 +118,7 @@ export function CurrentCourses({ courses, studentId, fullWidth, initialCourseId 
 
     try {
       const [activityResponse, submissionResponse] = await Promise.all([
-        fetch(`/api/course-activities?course=${selectedCourseId}&sort=createdAt&order=desc&populate=faculty&limit=200`),
+        fetch(`/api/course-activities?course=${selectedCourseId}&sort=created_at&order=desc&populate=faculty&limit=200`),
         fetch(`/api/activity-submissions?course=${selectedCourseId}&student=${studentId}&sort=submittedAt&order=desc&limit=200`),
       ])
 

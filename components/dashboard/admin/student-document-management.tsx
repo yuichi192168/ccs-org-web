@@ -56,7 +56,7 @@ export function StudentDocumentManagement() {
     setError('')
 
     try {
-      const response = await fetch('/api/student-documents?limit=500&sort=-createdAt&populate=student')
+      const response = await fetch('/api/student-documents?limit=500&sort=created_at&order=desc')
       const payload = await response.json()
 
       if (!response.ok || !payload.success) {

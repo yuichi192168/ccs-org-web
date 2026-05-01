@@ -89,7 +89,7 @@ export function CourseActivities({ facultyId, courses, enrollments }: CourseActi
     setError('')
 
     try {
-      const response = await fetch(`/api/course-activities?course=${selectedCourseId}&sort=createdAt&order=desc&limit=200`)
+      const response = await fetch(`/api/course-activities?course=${selectedCourseId}&sort=created_at&order=desc&limit=200`)
       const payload = await response.json()
 
       if (!response.ok || !payload.success) {

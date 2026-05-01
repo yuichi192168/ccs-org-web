@@ -43,16 +43,7 @@ export async function GET(request: NextRequest) {
     // Build query with server-side pagination and sorting
     let query = supabase
       .from('student_profiles')
-      .select(`
-        *,
-        users!inner (
-          id,
-          name,
-          email,
-          role,
-          status
-        )
-      `, { count: 'exact' })
+      .select('*', { count: 'exact' })
 
     // Apply search filter
     if (search) {
