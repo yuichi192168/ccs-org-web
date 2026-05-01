@@ -122,7 +122,7 @@ export function DisciplineRecordManagement() {
 
     try {
       const [recordsResponse, students] = await Promise.all([
-        fetch('/api/discipline-records?populate=student&limit=200&sort=incidentDate&order=desc'),
+        fetch('/api/discipline-records?limit=200&sort=incident_date&order=desc'),
         fetchAllPages<{ id: string; name: string; systemId: string }>((page) =>
           `/api/users?role=student&limit=100&page=${page}&sort=name&order=asc`
         ),

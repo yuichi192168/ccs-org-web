@@ -51,7 +51,7 @@ export function GradeScaleManagement() {
     setError('')
 
     try {
-      const response = await fetch('/api/grade-scales?limit=500&sort=maxScore&order=desc')
+      const response = await fetch('/api/grade-scales?limit=500&sort=max_score&order=desc')
       const payload = await response.json()
 
       if (!response.ok || !payload.success) {

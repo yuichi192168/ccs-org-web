@@ -81,7 +81,7 @@ export function MedicalRecordManagement() {
 
     try {
       const [recordsResponse, studentData] = await Promise.all([
-        fetch('/api/medical-records?populate=student&limit=200&sort=recordedAt&order=desc'),
+        fetch('/api/medical-records?limit=200&sort=created_at&order=desc'),
         fetchAllPages<{ id: string; name: string; systemId: string }>((page) =>
           `/api/users?role=student&limit=100&page=${page}&sort=name&order=asc`
         ),

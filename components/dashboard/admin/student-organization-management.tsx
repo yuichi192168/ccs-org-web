@@ -51,7 +51,7 @@ export function StudentOrganizationManagement() {
     setError('')
 
     try {
-      const response = await fetch('/api/student-organizations?limit=500&sort=-joinedAt&populate=student')
+      const response = await fetch('/api/organizations?limit=500&sort=created_at&order=desc')
       const payload = await response.json()
 
       if (!response.ok || !payload.success) {
