@@ -101,7 +101,12 @@ export async function GET(request: NextRequest) {
       .eq('is_active', true)
       .limit(5)
 
-    let recentCourses = []
+    let recentCourses: Array<{
+      id: string
+      code: string
+      enrolledCount: number
+      capacity: number
+    }> = []
     if (!recentCoursesError && recentCoursesData) {
       recentCourses = recentCoursesData.map(course => ({
         id: course.id,
