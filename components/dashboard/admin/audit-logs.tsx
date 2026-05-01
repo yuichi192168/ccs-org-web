@@ -32,7 +32,7 @@ export function AuditLogs() {
       setError('')
 
       try {
-        const response = await fetch('/api/audit-logs?populate=actor&limit=400&sort=occurredAt&order=desc')
+        const response = await fetch('/api/audit-logs?limit=400&sort=created_at&order=desc')
         const payload = await response.json()
 
         if (!response.ok || !payload.success) {
