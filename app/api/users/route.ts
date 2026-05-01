@@ -177,14 +177,18 @@ export async function PUT(request: NextRequest) {
     // Update password in auth.users if provided
     if (password && password.trim()) {
       console.log('Updating user password in auth.users...')
-      const { error: authError } = await supabase.auth.admin.updateUserById(
+      const { data: authData, error: authError } = await supabase.auth.admin.updateUserById(
         id,
         { password: password.trim() }
       )
 
       if (authError) {
         console.error('Failed to update auth user password:', authError)
-        return apiError('Failed to update user password', 500, { details: authError })
+        // Don't fail the entire operation if password update fails
+        // but log it for debugging
+        console.warn('Password update failed, but continuing with profile update:', authError.message)
+      } else {
+        console.log('Password updated successfully')
       }
     }
 

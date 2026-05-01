@@ -142,19 +142,32 @@ export async function PUT(request: NextRequest) {
       return apiError('Student profile ID is required', 400)
     }
 
+    // Map camelCase to snake_case for database
+    const dbUpdates: Record<string, any> = {}
+    if (updates.yearLevel !== undefined) dbUpdates.year_level = updates.yearLevel
+    if (updates.enrollmentStatus !== undefined) dbUpdates.enrollment_status = updates.enrollmentStatus
+    if (updates.studentNumber !== undefined) dbUpdates.student_number = updates.studentNumber
+    if (updates.gpa !== undefined) dbUpdates.gpa = updates.gpa
+    if (updates.program !== undefined) dbUpdates.program = updates.program
+    if (updates.userId !== undefined) dbUpdates.user_id = updates.userId
+
+    console.log('Mapped updates for database:', dbUpdates)
+
     const supabase = createAdminClient() as any
 
     const { data, error } = await supabase
       .from('student_profiles')
-      .update(updates)
+      .update(dbUpdates)
       .eq('id', id)
       .select()
       .single()
 
     if (error) {
+      console.error('Database update error:', error)
       return apiError('Failed to update student profile', 500, { details: error })
     }
 
+    console.log('Student profile updated successfully')
     return apiSuccess(data)
   } catch (error) {
     console.error('Error updating student profile:', error)
