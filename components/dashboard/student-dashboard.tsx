@@ -117,7 +117,7 @@ type StudentDashboardData = {
     fileName: string
     fileUrl: string
     status: string
-    createdAt: string
+    created_at: string
   }>
   organizations: Array<{
     id: string
