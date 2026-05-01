@@ -43,19 +43,7 @@ export async function GET(request: NextRequest) {
     // Build query with server-side pagination and sorting
     let query = supabase
       .from('course_prerequisites')
-      .select(`
-        *,
-        courses!inner (
-          id,
-          course_code,
-          title
-        ),
-        prerequisite_courses!inner (
-          id,
-          course_code,
-          title
-        )
-      `, { count: 'exact' })
+      .select('*', { count: 'exact' })
 
     // Apply filters
     if (courseId) {

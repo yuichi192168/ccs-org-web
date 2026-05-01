@@ -43,13 +43,7 @@ export async function GET(request: NextRequest) {
     // Build query with server-side pagination and sorting
     let query = supabase
       .from('audit_logs')
-      .select(`
-        *,
-        users (
-          name,
-          email
-        )
-      `, { count: 'exact' })
+      .select('*', { count: 'exact' })
 
     // Apply search filter
     if (search) {
