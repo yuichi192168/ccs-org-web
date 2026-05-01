@@ -240,12 +240,58 @@ export function GradeScaleManagement() {
       <CardContent className="space-y-4">
         {showCreate && (
           <form className="grid gap-3 md:grid-cols-3 rounded-lg border border-gray-700 bg-gray-800/40 p-4" onSubmit={onCreate}>
-            <Input value={createForm.institution} onChange={(event) => setCreateForm((previous) => ({ ...previous, institution: event.target.value }))} placeholder="Institution" className="bg-gray-800 border-gray-700 text-white" />
-            <Input value={createForm.letterGrade} onChange={(event) => setCreateForm((previous) => ({ ...previous, letterGrade: event.target.value }))} placeholder="Letter Grade" className="bg-gray-800 border-gray-700 text-white" />
-            <Input value={createForm.pointValue} onChange={(event) => setCreateForm((previous) => ({ ...previous, pointValue: event.target.value }))} placeholder="Point Value" type="number" step="0.01" className="bg-gray-800 border-gray-700 text-white" />
-            <Input value={createForm.minScore} onChange={(event) => setCreateForm((previous) => ({ ...previous, minScore: event.target.value }))} placeholder="Min Score" type="number" className="bg-gray-800 border-gray-700 text-white" />
-            <Input value={createForm.maxScore} onChange={(event) => setCreateForm((previous) => ({ ...previous, maxScore: event.target.value }))} placeholder="Max Score" type="number" className="bg-gray-800 border-gray-700 text-white" />
-            <Input value={createForm.description} onChange={(event) => setCreateForm((previous) => ({ ...previous, description: event.target.value }))} placeholder="Description" className="bg-gray-800 border-gray-700 text-white" />
+            <Input 
+              id="institution" 
+              name="institution"
+              value={createForm.institution} 
+              onChange={(event) => setCreateForm((previous) => ({ ...previous, institution: event.target.value }))} 
+              placeholder="Institution" 
+              className="bg-gray-800 border-gray-700 text-white" 
+            />
+            <Input 
+              id="letterGrade" 
+              name="letterGrade"
+              value={createForm.letterGrade} 
+              onChange={(event) => setCreateForm((previous) => ({ ...previous, letterGrade: event.target.value }))} 
+              placeholder="Letter Grade" 
+              className="bg-gray-800 border-gray-700 text-white" 
+            />
+            <Input 
+              id="pointValue" 
+              name="pointValue"
+              value={createForm.pointValue} 
+              onChange={(event) => setCreateForm((previous) => ({ ...previous, pointValue: event.target.value }))} 
+              placeholder="Point Value" 
+              type="number" 
+              step="0.01" 
+              className="bg-gray-800 border-gray-700 text-white" 
+            />
+            <Input 
+              id="minScore" 
+              name="minScore"
+              value={createForm.minScore} 
+              onChange={(event) => setCreateForm((previous) => ({ ...previous, minScore: event.target.value }))} 
+              placeholder="Min Score" 
+              type="number" 
+              className="bg-gray-800 border-gray-700 text-white" 
+            />
+            <Input 
+              id="maxScore" 
+              name="maxScore"
+              value={createForm.maxScore} 
+              onChange={(event) => setCreateForm((previous) => ({ ...previous, maxScore: event.target.value }))} 
+              placeholder="Max Score" 
+              type="number" 
+              className="bg-gray-800 border-gray-700 text-white" 
+            />
+            <Input 
+              id="description" 
+              name="description"
+              value={createForm.description} 
+              onChange={(event) => setCreateForm((previous) => ({ ...previous, description: event.target.value }))} 
+              placeholder="Description" 
+              className="bg-gray-800 border-gray-700 text-white" 
+            />
             <div className="md:col-span-3 flex justify-end">
               <Button type="submit" disabled={isSaving} className="bg-green-600 hover:bg-green-700">{isSaving ? 'Saving...' : 'Create Rule'}</Button>
             </div>
@@ -253,6 +299,8 @@ export function GradeScaleManagement() {
         )}
 
         <Input
+          id="search-grade-scales"
+          name="search-grade-scales"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
           placeholder="Search grade scales by institution, grade, description..."
@@ -283,13 +331,41 @@ export function GradeScaleManagement() {
                     <>
                       <td className="py-3 px-4 text-center">
                         <div className="flex items-center justify-center gap-2">
-                          <Input value={editForm.minScore} onChange={(event) => setEditForm((previous) => ({ ...previous, minScore: event.target.value }))} type="number" className="w-20 bg-gray-800 border-gray-700 text-white" />
+                          <Input 
+                            id="edit-min-score" 
+                            name="edit-min-score"
+                            value={editForm.minScore} 
+                            onChange={(event) => setEditForm((previous) => ({ ...previous, minScore: event.target.value }))} 
+                            type="number" 
+                            className="w-20 bg-gray-800 border-gray-700 text-white" 
+                          />
                           <span className="text-gray-500">-</span>
-                          <Input value={editForm.maxScore} onChange={(event) => setEditForm((previous) => ({ ...previous, maxScore: event.target.value }))} type="number" className="w-20 bg-gray-800 border-gray-700 text-white" />
+                          <Input 
+                            id="edit-max-score" 
+                            name="edit-max-score"
+                            value={editForm.maxScore} 
+                            onChange={(event) => setEditForm((previous) => ({ ...previous, maxScore: event.target.value }))} 
+                            type="number" 
+                            className="w-20 bg-gray-800 border-gray-700 text-white" 
+                          />
                         </div>
                       </td>
-                      <td className="py-3 px-4 text-center"><Input value={editForm.pointValue} onChange={(event) => setEditForm((previous) => ({ ...previous, pointValue: event.target.value }))} type="number" step="0.01" className="w-20 bg-gray-800 border-gray-700 text-white mx-auto" /></td>
-                      <td className="py-3 px-4"><Input value={editForm.description} onChange={(event) => setEditForm((previous) => ({ ...previous, description: event.target.value }))} className="bg-gray-800 border-gray-700 text-white" /></td>
+                      <td className="py-3 px-4 text-center"><Input 
+                        id="edit-point-value" 
+                        name="edit-point-value"
+                        value={editForm.pointValue} 
+                        onChange={(event) => setEditForm((previous) => ({ ...previous, pointValue: event.target.value }))} 
+                        type="number" 
+                        step="0.01" 
+                        className="w-20 bg-gray-800 border-gray-700 text-white mx-auto" 
+                      /></td>
+                      <td className="py-3 px-4"><Input 
+                        id="edit-description" 
+                        name="edit-description"
+                        value={editForm.description} 
+                        onChange={(event) => setEditForm((previous) => ({ ...previous, description: event.target.value }))} 
+                        className="bg-gray-800 border-gray-700 text-white" 
+                      /></td>
                     </>
                   ) : (
                     <>

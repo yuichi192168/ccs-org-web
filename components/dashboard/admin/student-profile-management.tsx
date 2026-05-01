@@ -254,15 +254,44 @@ export function StudentProfileManagement() {
       <CardContent className="space-y-4">
         {showCreate && (
           <form className="grid gap-3 md:grid-cols-4 rounded-lg border border-gray-700 bg-gray-800/40 p-4" onSubmit={onCreateProfile}>
-            <Input value={createForm.userId} onChange={(e) => setCreateForm((p) => ({ ...p, userId: e.target.value }))} placeholder="User ID" className="bg-gray-800 border-gray-700 text-white" />
-            <Input value={createForm.studentNumber} onChange={(e) => setCreateForm((p) => ({ ...p, studentNumber: e.target.value }))} placeholder="Student Number" className="bg-gray-800 border-gray-700 text-white" />
-            <Input value={createForm.program} onChange={(e) => setCreateForm((p) => ({ ...p, program: e.target.value }))} placeholder="Program" className="bg-gray-800 border-gray-700 text-white" />
-            <select value={createForm.yearLevel} onChange={(e) => setCreateForm((p) => ({ ...p, yearLevel: Number(e.target.value) }))} className="h-10 rounded-md border border-gray-700 bg-gray-800 px-3 text-sm text-white">
+            <Input 
+              id="user-id" 
+              name="user-id"
+              value={createForm.userId} 
+              onChange={(e) => setCreateForm((p) => ({ ...p, userId: e.target.value }))} 
+              placeholder="User ID" 
+              className="bg-gray-800 border-gray-700 text-white" 
+            />
+            <Input 
+              id="student-number" 
+              name="student-number"
+              value={createForm.studentNumber} 
+              onChange={(e) => setCreateForm((p) => ({ ...p, studentNumber: e.target.value }))} 
+              placeholder="Student Number" 
+              className="bg-gray-800 border-gray-700 text-white" 
+            />
+            <Input 
+              id="program" 
+              name="program"
+              value={createForm.program} 
+              onChange={(e) => setCreateForm((p) => ({ ...p, program: e.target.value }))} 
+              placeholder="Program" 
+              className="bg-gray-800 border-gray-700 text-white" 
+            />
+            <select 
+              id="year-level" 
+              name="year-level"
+              value={createForm.yearLevel} 
+              onChange={(e) => setCreateForm((p) => ({ ...p, yearLevel: Number(e.target.value) }))} 
+              className="h-10 rounded-md border border-gray-700 bg-gray-800 px-3 text-sm text-white"
+            >
               {yearLevels.map((year) => (
                 <option key={year} value={year}>{year}{year === 1 ? 'st' : year === 2 ? 'nd' : year === 3 ? 'rd' : 'th'} Year</option>
               ))}
             </select>
             <Input 
+              id="gpa" 
+              name="gpa"
               type="number" 
               step="0.01" 
               min="0" 
@@ -272,7 +301,13 @@ export function StudentProfileManagement() {
               placeholder="GPA (0.00-4.00)" 
               className="bg-gray-800 border-gray-700 text-white" 
             />
-            <select value={createForm.enrollmentStatus} onChange={(e) => setCreateForm((p) => ({ ...p, enrollmentStatus: e.target.value }))} className="h-10 rounded-md border border-gray-700 bg-gray-800 px-3 text-sm text-white">
+            <select 
+              id="enrollment-status" 
+              name="enrollment-status"
+              value={createForm.enrollmentStatus} 
+              onChange={(e) => setCreateForm((p) => ({ ...p, enrollmentStatus: e.target.value }))} 
+              className="h-10 rounded-md border border-gray-700 bg-gray-800 px-3 text-sm text-white"
+            >
               <option value="enrolled">Enrolled</option>
               <option value="suspended">Suspended</option>
               <option value="graduated">Graduated</option>
@@ -286,6 +321,8 @@ export function StudentProfileManagement() {
 
         <div className="relative">
           <Input
+            id="search-student-profiles"
+            name="search-student-profiles"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search by student number, name, program..."
@@ -317,10 +354,22 @@ export function StudentProfileManagement() {
                   {editingId === profile.id ? (
                     <>
                       <td className="py-3 px-4">
-                        <Input value={editForm.program} onChange={(e) => setEditForm((p) => ({ ...p, program: e.target.value }))} className="bg-gray-700 border-gray-600 text-white" />
+                        <Input 
+                          id="edit-program" 
+                          name="edit-program"
+                          value={editForm.program} 
+                          onChange={(e) => setEditForm((p) => ({ ...p, program: e.target.value }))} 
+                          className="bg-gray-700 border-gray-600 text-white" 
+                        />
                       </td>
                       <td className="py-3 px-4">
-                        <select value={editForm.yearLevel} onChange={(e) => setEditForm((p) => ({ ...p, yearLevel: Number(e.target.value) }))} className="h-8 rounded-md border border-gray-600 bg-gray-700 px-2 text-sm text-white">
+                        <select 
+                          id="edit-year-level" 
+                          name="edit-year-level"
+                          value={editForm.yearLevel} 
+                          onChange={(e) => setEditForm((p) => ({ ...p, yearLevel: Number(e.target.value) }))} 
+                          className="h-8 rounded-md border border-gray-600 bg-gray-700 px-2 text-sm text-white"
+                        >
                           {yearLevels.map((year) => (
                             <option key={year} value={year}>{year}</option>
                           ))}

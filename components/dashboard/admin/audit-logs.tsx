@@ -87,6 +87,8 @@ export function AuditLogs() {
       <CardContent className="space-y-4">
         <div className="relative">
           <Input
+            id="search-audit-logs"
+            name="search-audit-logs"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search logs by user, action, resource..."

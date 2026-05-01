@@ -262,6 +262,8 @@ export function CoursePrerequisiteManagement() {
         )}
 
         <Input
+          id="search-prerequisites"
+          name="search-prerequisites"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
           placeholder="Search prerequisites by course code/name..."

@@ -222,8 +222,22 @@ export function StudentDocumentManagement() {
               </select>
             </div>
             <div className="grid gap-3 md:grid-cols-2">
-              <Input value={createForm.fileName} onChange={(e) => setCreateForm((p) => ({ ...p, fileName: e.target.value }))} placeholder="File Name" className="bg-gray-800 border-gray-700 text-white" />
-              <Input value={createForm.fileUrl} onChange={(e) => setCreateForm((p) => ({ ...p, fileUrl: e.target.value }))} placeholder="File URL" className="bg-gray-800 border-gray-700 text-white" />
+              <Input 
+                id="file-name" 
+                name="file-name"
+                value={createForm.fileName} 
+                onChange={(e) => setCreateForm((p) => ({ ...p, fileName: e.target.value }))} 
+                placeholder="File Name" 
+                className="bg-gray-800 border-gray-700 text-white" 
+              />
+              <Input 
+                id="file-url" 
+                name="file-url"
+                value={createForm.fileUrl} 
+                onChange={(e) => setCreateForm((p) => ({ ...p, fileUrl: e.target.value }))} 
+                placeholder="File URL" 
+                className="bg-gray-800 border-gray-700 text-white" 
+              />
             </div>
             <div className="flex justify-end">
               <Button type="submit" disabled={isSaving} className="bg-green-600 hover:bg-green-700">{isSaving ? 'Saving...' : 'Create Document'}</Button>
@@ -233,6 +247,8 @@ export function StudentDocumentManagement() {
 
         <div className="relative">
           <Input
+            id="search-documents"
+            name="search-documents"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search by title, category, student name, file name..."
@@ -266,10 +282,22 @@ export function StudentDocumentManagement() {
                   {editingId === doc.id ? (
                     <>
                       <td className="py-3 px-4">
-                        <Input value={editForm.fileName} onChange={(e) => setEditForm((p) => ({ ...p, fileName: e.target.value }))} className="bg-gray-700 border-gray-600 text-white text-xs" />
+                        <Input 
+                          id="edit-file-name" 
+                          name="edit-file-name"
+                          value={editForm.fileName} 
+                          onChange={(e) => setEditForm((p) => ({ ...p, fileName: e.target.value }))} 
+                          className="bg-gray-700 border-gray-600 text-white text-xs" 
+                        />
                       </td>
                       <td className="py-3 px-4 text-center">
-                        <select value={editForm.status} onChange={(e) => setEditForm((p) => ({ ...p, status: e.target.value }))} className="h-8 rounded-md border border-gray-600 bg-gray-700 px-2 text-sm text-white">
+                        <select 
+                          id="edit-status" 
+                          name="edit-status"
+                          value={editForm.status} 
+                          onChange={(e) => setEditForm((p) => ({ ...p, status: e.target.value }))} 
+                          className="h-8 rounded-md border border-gray-600 bg-gray-700 px-2 text-sm text-white"
+                        >
                           {statuses.map((status) => (
                             <option key={status} value={status}>{status}</option>
                           ))}

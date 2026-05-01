@@ -204,13 +204,32 @@ export function StudentOrganizationManagement() {
       <CardContent className="space-y-4">
         {showCreate && (
           <form className="grid gap-3 md:grid-cols-4 rounded-lg border border-gray-700 bg-gray-800/40 p-4" onSubmit={onCreateRecord}>
-            <Input value={createForm.organizationName} onChange={(e) => setCreateForm((p) => ({ ...p, organizationName: e.target.value }))} placeholder="Organization Name" className="bg-gray-800 border-gray-700 text-white" />
-            <select value={createForm.role} onChange={(e) => setCreateForm((p) => ({ ...p, role: e.target.value }))} className="h-10 rounded-md border border-gray-700 bg-gray-800 px-3 text-sm text-white">
+            <Input 
+              id="organization-name" 
+              name="organization-name"
+              value={createForm.organizationName} 
+              onChange={(e) => setCreateForm((p) => ({ ...p, organizationName: e.target.value }))} 
+              placeholder="Organization Name" 
+              className="bg-gray-800 border-gray-700 text-white" 
+            />
+            <select 
+              id="role" 
+              name="role"
+              value={createForm.role} 
+              onChange={(e) => setCreateForm((p) => ({ ...p, role: e.target.value }))} 
+              className="h-10 rounded-md border border-gray-700 bg-gray-800 px-3 text-sm text-white"
+            >
               {roles.map((role) => (
                 <option key={role} value={role}>{role}</option>
               ))}
             </select>
-            <select value={createForm.status} onChange={(e) => setCreateForm((p) => ({ ...p, status: e.target.value }))} className="h-10 rounded-md border border-gray-700 bg-gray-800 px-3 text-sm text-white">
+            <select 
+              id="status" 
+              name="status"
+              value={createForm.status} 
+              onChange={(e) => setCreateForm((p) => ({ ...p, status: e.target.value }))} 
+              className="h-10 rounded-md border border-gray-700 bg-gray-800 px-3 text-sm text-white"
+            >
               {statuses.map((status) => (
                 <option key={status} value={status}>{status}</option>
               ))}
@@ -223,9 +242,11 @@ export function StudentOrganizationManagement() {
 
         <div className="relative">
           <Input
+            id="search-organizations"
+            name="search-organizations"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search by organization, role, student name, status..."
+            placeholder="Search organizations by name, role, student..."
             className="bg-gray-800 border-gray-700 text-white placeholder-gray-500"
           />
         </div>
@@ -252,7 +273,13 @@ export function StudentOrganizationManagement() {
                   {editingId === record.id ? (
                     <>
                       <td className="py-3 px-4">
-                        <select value={editForm.role} onChange={(e) => setEditForm((p) => ({ ...p, role: e.target.value }))} className="h-8 rounded-md border border-gray-600 bg-gray-700 px-2 text-sm text-white">
+                        <select 
+                          id="edit-role" 
+                          name="edit-role"
+                          value={editForm.role} 
+                          onChange={(e) => setEditForm((p) => ({ ...p, role: e.target.value }))} 
+                          className="h-8 rounded-md border border-gray-600 bg-gray-700 px-2 text-sm text-white"
+                        >
                           {roles.map((role) => (
                             <option key={role} value={role}>{role}</option>
                           ))}
