@@ -134,7 +134,7 @@ export function DisciplineRecordManagement() {
         throw new Error(recordsPayload.message || 'Unable to load discipline records.')
       }
 
-      setRecords(Array.isArray(recordsPayload.data) ? recordsPayload.data : [])
+      setRecords(Array.isArray(recordsPayload.data?.records) ? recordsPayload.data.records : [])
       setStudents(
         students.map((student) => ({
           id: student.id,

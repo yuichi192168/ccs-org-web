@@ -63,7 +63,7 @@ export function StudentDocumentManagement() {
         throw new Error(payload.message || 'Failed to load student documents.')
       }
 
-      setDocuments(Array.isArray(payload.data) ? payload.data : [])
+      setDocuments(Array.isArray(payload.data?.documents) ? payload.data.documents : [])
     } catch (loadError) {
       setError(loadError instanceof Error ? loadError.message : 'Failed to load student documents.')
     } finally {

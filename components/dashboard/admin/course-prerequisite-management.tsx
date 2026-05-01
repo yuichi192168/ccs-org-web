@@ -68,8 +68,8 @@ export function CoursePrerequisiteManagement() {
         throw new Error(coursesPayload.message || 'Failed to load courses.')
       }
 
-      setRecords(Array.isArray(prerequisitePayload.data) ? prerequisitePayload.data : [])
-      setCourses(Array.isArray(coursesPayload.data) ? coursesPayload.data : [])
+      setRecords(Array.isArray(prerequisitePayload.data?.prerequisites) ? prerequisitePayload.data.prerequisites : [])
+      setCourses(Array.isArray(coursesPayload.data?.courses) ? coursesPayload.data.courses : [])
     } catch (loadError) {
       setError(loadError instanceof Error ? loadError.message : 'Failed to load prerequisite data.')
     } finally {

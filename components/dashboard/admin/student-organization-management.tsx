@@ -58,7 +58,7 @@ export function StudentOrganizationManagement() {
         throw new Error(payload.message || 'Failed to load organization records.')
       }
 
-      setRecords(Array.isArray(payload.data) ? payload.data : [])
+      setRecords(Array.isArray(payload.data?.organizations) ? payload.data.organizations : [])
     } catch (loadError) {
       setError(loadError instanceof Error ? loadError.message : 'Failed to load organization records.')
     } finally {

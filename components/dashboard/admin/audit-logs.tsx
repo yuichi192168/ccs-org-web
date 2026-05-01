@@ -40,7 +40,7 @@ export function AuditLogs() {
         }
 
         if (mounted) {
-          setLogs(Array.isArray(payload.data) ? payload.data : [])
+          setLogs(Array.isArray(payload.data?.logs) ? payload.data.logs : [])
         }
       } catch (loadError) {
         if (mounted) {

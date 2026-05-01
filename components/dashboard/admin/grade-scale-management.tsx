@@ -58,7 +58,7 @@ export function GradeScaleManagement() {
         throw new Error(payload.message || 'Failed to load grade scales.')
       }
 
-      setRecords(Array.isArray(payload.data) ? payload.data : [])
+      setRecords(Array.isArray(payload.data?.gradeScales) ? payload.data.gradeScales : [])
     } catch (loadError) {
       setError(loadError instanceof Error ? loadError.message : 'Failed to load grade scales.')
     } finally {

@@ -93,7 +93,7 @@ export function MedicalRecordManagement() {
         throw new Error(recordsPayload.message || 'Unable to load medical records.')
       }
 
-      setRecords(Array.isArray(recordsPayload.data) ? recordsPayload.data : [])
+      setRecords(Array.isArray(recordsPayload.data?.records) ? recordsPayload.data.records : [])
       setStudents(studentData.map((student) => ({ id: student.id, name: student.name, systemId: student.systemId })))
     } catch (loadError) {
       setError(loadError instanceof Error ? loadError.message : 'Failed to load module data.')
